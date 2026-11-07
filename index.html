@@ -8,12 +8,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0f172a; --card: rgba(30, 41, 59, 0.8); --text: #f8fafc; --muted: #94a3b8; --accent: #3b82f6;
+            --bg: #0f172a; --card: rgba(30, 41, 59, 0.8); --text: #f8fafc; --muted: #94a3b8; --accent: #3b82f6; --danger: #ef4444;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; font-family: 'Vazirmatn', sans-serif; }
         body {
-            font-family: 'Vazirmatn', sans-serif; background-color: var(--bg);
-            background-image: radial-gradient(circle at top right, #1e1b4b, #0f172a);
+            background-color: var(--bg); background-image: radial-gradient(circle at top right, #1e1b4b, #0f172a);
             color: var(--text); min-height: 100vh; padding: 20px; padding-bottom: 50px;
         }
         .header { text-align: center; margin-bottom: 25px; }
@@ -27,26 +26,40 @@
         .price-card .price { font-size: 0.9rem; color: #34d399; font-weight: 700; }
         .loading-pulse { animation: pulse 1.5s infinite; color: var(--muted) !important; }
 
-        /* منو */
+        /* منوها */
         .menu-title { font-size: 1.1rem; margin-bottom: 15px; border-right: 4px solid var(--accent); padding-right: 10px; }
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
         .menu-btn {
             background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px; padding: 15px 5px; text-align: center; cursor: pointer;
-            color: white; font-family: 'Vazirmatn', sans-serif; font-size: 0.85rem;
-            display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;
+            color: white; font-size: 0.8rem; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;
         }
         .menu-btn:active { background: var(--accent); transform: scale(0.95); }
         .menu-btn .emoji { font-size: 1.5rem; }
 
-        /* اخبار */
-        #news-view { display: none; }
-        .back-btn { background: #ef4444; color: white; border: none; padding: 12px; border-radius: 8px; font-family: inherit; font-size: 1rem; width: 100%; margin-bottom: 20px; cursor: pointer; }
-        .news-item { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 15px; border-right: 4px solid var(--accent); animation: fadeIn 0.5s ease; }
+        /* بخش‌های داخلی (اخبار، ماشین حساب، مترجم) */
+        .sub-view { display: none; animation: fadeIn 0.3s ease; }
+        .back-btn { background: var(--danger); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 1rem; width: 100%; margin-bottom: 20px; cursor: pointer; }
+        
+        .news-item { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 15px; border-right: 4px solid var(--accent); }
         .news-item h3 { font-size: 1rem; margin-bottom: 10px; line-height: 1.6; }
         .news-item p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; margin-bottom: 10px; }
         .news-meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: #fbbf24; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); }
         
+        /* فرم‌ها */
+        .form-box { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); }
+        input[type="text"] {
+            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.2); color: white; font-size: 1rem; margin-bottom: 15px; outline: none;
+        }
+        input[type="text"]:focus { border-color: var(--accent); }
+        .action-btn {
+            width: 100%; padding: 12px; border-radius: 8px; border: none; background: var(--accent);
+            color: white; font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.2s;
+        }
+        .action-btn:active { transform: scale(0.98); background: #2563eb; }
+        .result-box { margin-top: 15px; padding: 15px; background: rgba(52, 211, 153, 0.1); border: 1px solid #34d399; border-radius: 8px; color: #34d399; font-size: 1rem; text-align: center; display: none; }
+
         .spinner { text-align: center; font-size: 1.2rem; color: var(--accent); margin-top: 20px; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -77,13 +90,42 @@
             <button class="menu-btn" onclick="loadNews('tech', 'اخبار فناوری')"><span class="emoji">💻</span>فناوری</button>
             <button class="menu-btn" onclick="loadNews('photo', 'اخبار تصویری')"><span class="emoji">📸</span>تصویری</button>
         </div>
+
+        <div class="menu-title">🛠 ابزارهای کاربردی</div>
+        <div class="menu-grid" style="grid-template-columns: 1fr 1fr;">
+            <button class="menu-btn" onclick="showView('calc-view')"><span class="emoji">🧮</span>تبدیل ارز</button>
+            <button class="menu-btn" onclick="showView('trans-view')"><span class="emoji">🌐</span>مترجم</button>
+        </div>
     </div>
 
     <!-- صفحه اخبار -->
-    <div id="news-view">
+    <div id="news-view" class="sub-view">
         <button class="back-btn" onclick="goBack()">🔙 بازگشت به منو</button>
         <div class="menu-title" id="news-title">در حال بارگذاری...</div>
         <div id="news-list"></div>
+    </div>
+
+    <!-- صفحه تبدیل ارز -->
+    <div id="calc-view" class="sub-view">
+        <button class="back-btn" onclick="goBack()">🔙 بازگشت به منو</button>
+        <div class="menu-title">🧮 تبدیل ارز</div>
+        <div class="form-box">
+            <p style="margin-bottom: 10px; font-size: 0.9rem; color: var(--muted);">مثلاً بنویسید: 50 دلار / 100 یورو / 0.5 بیت کوین / 1000000 تومان</p>
+            <input type="text" id="calc-input" placeholder="مبلغ و واحد را وارد کنید...">
+            <button class="action-btn" onclick="doConvert()">تبدیل کن</button>
+            <div id="calc-result" class="result-box"></div>
+        </div>
+    </div>
+
+    <!-- صفحه مترجم -->
+    <div id="trans-view" class="sub-view">
+        <button class="back-btn" onclick="goBack()">🔙 بازگشت به منو</button>
+        <div class="menu-title">🌐 مترجم هوشمند</div>
+        <div class="form-box">
+            <input type="text" id="trans-input" placeholder="متن فارسی یا انگلیسی را بنویسید...">
+            <button class="action-btn" onclick="doTranslate()">ترجمه کن</button>
+            <div id="trans-result" class="result-box"></div>
+        </div>
     </div>
 
     <script>
@@ -116,7 +158,7 @@
         }
         getPrices();
 
-        // ۲. دریافت اخبار (با استفاده از سرویس rss2json برای دور زدن CORS)
+        // ۲. دریافت اخبار
         const feeds = {
             'general': 'https://feeds.bbci.co.uk/persian/rss.xml',
             'sport': 'https://www.varzesh3.com/rss',
@@ -128,34 +170,29 @@
 
         async function loadNews(category, title) {
             tg.HapticFeedback.impactOccurred('medium');
-            document.getElementById('main-view').style.display = 'none';
-            document.getElementById('news-view').style.display = 'block';
+            showView('news-view');
             document.getElementById('news-title').innerText = title;
-            document.getElementById('news-list').innerHTML = '<div class="spinner">⏳ در حال دریافت اخبار...</div>';
+            document.getElementById('news-list').innerHTML = '<div class="spinner">⏳ در حال دریافت...</div>';
 
             try {
-                // سرویس rss2json برای تبدیل RSS به JSON
                 const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feeds[category])}`;
                 const res = await fetch(url);
                 const data = await res.json();
 
                 if(data.status === 'ok' && data.items.length > 0) {
                     let html = '';
-                    // نمایش ۵ خبر
                     data.items.slice(0, 5).forEach(item => {
                         let date = item.pubDate ? new Date(item.pubDate).toLocaleDateString('fa-IR') : 'نامشخص';
-                        let desc = item.description.replace(/<[^>]*>?/gm, '').substring(0, 120) + '...';
-                        
+                        let desc = item.description.replace(/<[^>]*>?/gm, '').substring(0, 100) + '...';
                         html += `
                             <div class="news-item">
                                 <h3>${item.title}</h3>
                                 <p>${desc}</p>
                                 <div class="news-meta">
                                     <span>🕐 ${date}</span>
-                                    <span style="color: #60a5fa;" onclick="window.open('${item.link}', '_blank')">مشاهده کامل ↗</span>
+                                    <span style="color: #60a5fa;" onclick="tg.openLink('${item.link}')">مشاهده ↗</span>
                                 </div>
-                            </div>
-                        `;
+                            </div>`;
                     });
                     document.getElementById('news-list').innerHTML = html;
                 } else {
@@ -166,9 +203,95 @@
             }
         }
 
+        // ۳. ماشین حساب تبدیل ارز
+        async function doConvert() {
+            const text = document.getElementById('calc-input').value.toLowerCase();
+            const resultBox = document.getElementById('calc-result');
+            resultBox.style.display = 'none';
+
+            const match = text.match(/([\d\.]+)\s*(دلار|یورو|تومان|بیت|bitcoin|btc|eth|اتریوم|پوند|dollar)/);
+            if(!match) {
+                resultBox.style.display = 'block';
+                resultBox.style.background = 'rgba(239, 68, 68, 0.1)';
+                resultBox.style.borderColor = 'var(--danger)';
+                resultBox.style.color = 'var(--danger)';
+                resultBox.innerText = "❌ فرمت اشتباه است (مثلاً: 50 دلار)";
+                return;
+            }
+
+            const amount = parseFloat(match[1]);
+            const curr = match[2];
+            resultBox.innerText = "⏳ در حال محاسبه...";
+            resultBox.style.display = 'block';
+
+            try {
+                const res = await fetch("https://raw.githubusercontent.com/iran-market/iran-market.github.io/main/data/popular.json");
+                const data = await res.json();
+                const rates = data.data;
+                const usd = rates.find(x => x.symbol === "USD_IRR_FREE")?.price || 0;
+                const eur = rates.find(x => x.symbol === "EUR_IRR_FREE")?.price || 0;
+                const gbp = rates.find(x => x.symbol === "GBP_IRR_FREE")?.price || 0;
+
+                let finalMsg = "";
+                if(curr.includes("دلار") || curr.includes("dollar")) finalMsg = `${amount} دلار = ${(amount * usd).toLocaleString('fa-IR')} تومان`;
+                else if(curr.includes("یورو")) finalMsg = `${amount} یورو = ${(amount * eur).toLocaleString('fa-IR')} تومان`;
+                else if(curr.includes("پوند")) finalMsg = `${amount} پوند = ${(amount * gbp).toLocaleString('fa-IR')} تومان`;
+                else if(curr.includes("تومان")) finalMsg = `${amount.toLocaleString('fa-IR')} تومان = ${(amount / usd).toFixed(2)} دلار`;
+                else if(curr.includes("بیت") || curr.includes("btc") || curr.includes("bitcoin")) {
+                    const btcRes = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd");
+                    const btcData = await btcRes.json();
+                    const btcUsd = btcData.bitcoin.usd;
+                    finalMsg = `${amount} بیت‌کوین = ${(amount * btcUsd).toLocaleString('en-US')} دلار = ${(amount * btcUsd * usd).toLocaleString('fa-IR')} تومان`;
+                }
+                else if(curr.includes("اتریوم") || curr.includes("eth")) {
+                    const ethRes = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd");
+                    const ethData = await ethRes.json();
+                    const ethUsd = ethData.ethereum.usd;
+                    finalMsg = `${amount} اتریوم = ${(amount * ethUsd).toLocaleString('en-US')} دلار = ${(amount * ethUsd * usd).toLocaleString('fa-IR')} تومان`;
+                }
+
+                resultBox.style.background = 'rgba(52, 211, 153, 0.1)';
+                resultBox.style.borderColor = '#34d399';
+                resultBox.style.color = '#34d399';
+                resultBox.innerText = finalMsg;
+            } catch(e) {
+                resultBox.innerText = "❌ خطا در دریافت قیمت‌ها";
+            }
+        }
+
+        // ۴. مترجم
+        async function doTranslate() {
+            const text = document.getElementById('trans-input').value;
+            const resultBox = document.getElementById('trans-result');
+            if(!text) return;
+            
+            resultBox.style.display = 'block';
+            resultBox.innerText = "⏳ در حال ترجمه...";
+            
+            const isFa = /[\u0600-\u06FF]/.test(text);
+            const src = isFa ? "fa" : "en";
+            const tgt = isFa ? "en" : "fa";
+
+            try {
+                const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${src}|${tgt}`);
+                const data = await res.json();
+                resultBox.innerText = data.responseData.translatedText;
+            } catch(e) {
+                resultBox.innerText = "❌ خطا در ترجمه. فیلترشکن را بررسی کنید.";
+            }
+        }
+
+        // مدیریت صفحات
+        function showView(viewId) {
+            tg.HapticFeedback.impactOccurred('light');
+            document.getElementById('main-view').style.display = 'none';
+            document.querySelectorAll('.sub-view').forEach(el => el.style.display = 'none');
+            document.getElementById(viewId).style.display = 'block';
+        }
+
         function goBack() {
             tg.HapticFeedback.impactOccurred('light');
-            document.getElementById('news-view').style.display = 'none';
+            document.querySelectorAll('.sub-view').forEach(el => el.style.display = 'none');
             document.getElementById('main-view').style.display = 'block';
         }
     </script>

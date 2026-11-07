@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RX News | پنل هوشمند</title>
+    <title>RX News | مینی اپ</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -29,90 +29,116 @@
             background-image: radial-gradient(circle at top right, #1e1b4b, #0f172a);
             color: var(--text-main);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
             padding: 20px;
+            padding-bottom: 50px;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 30px;
-            animation: fadeInDown 0.8s ease;
+            margin-bottom: 25px;
         }
 
         .header h1 {
             font-size: 1.8rem;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             background: linear-gradient(90deg, #60a5fa, #a78bfa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .header p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
+        .header p { color: var(--text-muted); font-size: 0.9rem; }
 
-        .grid-container {
+        /* بخش قیمت‌ها */
+        .prices-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            animation: fadeInUp 0.8s ease;
+            gap: 10px;
+            margin-bottom: 30px;
         }
 
-        .card {
+        .price-card {
             background: var(--card-bg);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 20px 15px;
+            border-radius: 12px;
+            padding: 15px 10px;
             text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .price-card .icon { font-size: 1.5rem; margin-bottom: 5px; }
+        .price-card .title { font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; }
+        .price-card .price { font-size: 0.85rem; color: #34d399; font-weight: 700; }
+        .price-card.loading .price { color: var(--text-muted); animation: pulse 1.5s infinite; }
+
+        /* دکمه‌های منو */
+        .menu-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            border-right: 4px solid var(--accent);
+            padding-right: 10px;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .menu-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .menu-btn:active { background: var(--accent); transform: scale(0.95); }
+        .menu-btn .emoji { font-size: 1.2rem; }
+
+        /* اخبار */
+        #news-container { display: none; }
+        .news-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-right: 4px solid var(--accent);
+        }
+        .news-item h3 { font-size: 1rem; margin-bottom: 8px; line-height: 1.5; }
+        .news-item p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 10px; }
+        .news-item .date { font-size: 0.75rem; color: #fbbf24; }
+        .back-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 1rem;
+            width: 100%;
+            margin-bottom: 20px;
             cursor: pointer;
         }
 
-        .card:active {
-            transform: scale(0.95);
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
-
-        .card .icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        .card .title {
-            font-size: 1rem;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .card .price {
-            font-size: 0.9rem;
-            color: #34d399; /* رنگ سبز برای قیمت */
-            font-weight: 700;
-        }
-
-        .card.loading .price {
-            color: var(--text-muted);
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
+        .loading-spinner {
+            text-align: center;
+            color: var(--accent);
+            font-size: 1.2rem;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -120,92 +146,144 @@
 
     <div class="header">
         <h1>RX News</h1>
-        <p>پنل هوشمند قیمت‌ها و خدمات</p>
+        <p>خبرخوان و پنل هوشمند</p>
     </div>
 
-    <div class="grid-container">
-        <!-- کارت دلار -->
-        <div class="card loading" id="usd-card" onclick="tg.HapticFeedback.impactOccurred('light')">
-            <div class="icon">💵</div>
-            <div class="title">دلار آزاد</div>
-            <div class="price" id="usd-price">در حال دریافت...</div>
+    <!-- بخش اصلی -->
+    <div id="main-view">
+        <div class="prices-grid">
+            <div class="price-card loading" id="usd-card">
+                <div class="icon">💵</div>
+                <div class="title">دلار آزاد</div>
+                <div class="price" id="usd-price">...</div>
+            </div>
+            <div class="price-card loading" id="gold-card">
+                <div class="icon">🥇</div>
+                <div class="title">طلای ۱۸ عیار</div>
+                <div class="price" id="gold-price">...</div>
+            </div>
+            <div class="price-card loading" id="coin-card">
+                <div class="icon">🪙</div>
+                <div class="title">سکه امامی</div>
+                <div class="price" id="coin-price">...</div>
+            </div>
+            <div class="price-card loading" id="btc-card">
+                <div class="icon">₿</div>
+                <div class="title">بیت‌کوین</div>
+                <div class="price" id="btc-price">...</div>
+            </div>
         </div>
 
-        <!-- کارت طلا -->
-        <div class="card loading" id="gold-card" onclick="tg.HapticFeedback.impactOccurred('light')">
-            <div class="icon">🥇</div>
-            <div class="title">طلای ۱۸ عیار</div>
-            <div class="price" id="gold-price">در حال دریافت...</div>
+        <div class="menu-title">📰 دسته‌بندی اخبار</div>
+        <div class="menu-grid">
+            <button class="menu-btn" onclick="loadNews('general')"><span class="emoji">📰</span>اخبار عمومی</button>
+            <button class="menu-btn" onclick="loadNews('sport')"><span class="emoji">⚽</span>ورزشی</button>
+            <button class="menu-btn" onclick="loadNews('politics')"><span class="emoji">🏛️</span>سیاسی</button>
+            <button class="menu-btn" onclick="loadNews('economy')"><span class="emoji">💰</span>اقتصادی</button>
+            <button class="menu-btn" onclick="loadNews('tech')"><span class="emoji">💻</span>فناوری</button>
+            <button class="menu-btn" onclick="loadNews('photo')"><span class="emoji">📸</span>تصویری</button>
         </div>
+    </div>
 
-        <!-- کارت سکه -->
-        <div class="card loading" id="coin-card" onclick="tg.HapticFeedback.impactOccurred('light')">
-            <div class="icon">🪙</div>
-            <div class="title">سکه امامی</div>
-            <div class="price" id="coin-price">در حال دریافت...</div>
-        </div>
-
-        <!-- کارت بیت‌کوین -->
-        <div class="card loading" id="btc-card" onclick="tg.HapticFeedback.impactOccurred('light')">
-            <div class="icon">₿</div>
-            <div class="title">بیت‌کوین</div>
-            <div class="price" id="btc-price">در حال دریافت...</div>
-        </div>
+    <!-- بخش نمایش اخبار -->
+    <div id="news-container">
+        <button class="back-btn" onclick="goBack()">🔙 بازگشت به منو</button>
+        <div class="menu-title" id="news-title">در حال بارگذاری...</div>
+        <div id="news-list"></div>
     </div>
 
     <script>
-        // اتصال به تلگرام
         const tg = window.Telegram.WebApp;
-        tg.expand(); // تمام صفحه شدن
+        tg.expand();
         tg.ready();
 
-        // آدرسی که قیمت‌ها رو ازش می‌خونیم
-        const API_URL = "https://raw.githubusercontent.com/iran-market/iran-market.github.io/main/data/popular.json";
-
+        // ۱. دریافت قیمت‌ها
         async function fetchPrices() {
             try {
-                // گرفتن قیمت‌های داخلی
-                const response = await fetch(API_URL);
+                const response = await fetch("https://raw.githubusercontent.com/iran-market/iran-market.github.io/main/data/popular.json");
                 const data = await response.json();
-                
-                // پیدا کردن قیمت‌های مورد نظر
                 const prices = data.data;
                 
                 const usd = prices.find(p => p.symbol === "USD_IRR_FREE");
                 const gold = prices.find(p => p.symbol === "GOLD_18K_IRR");
                 const coin = prices.find(p => p.symbol === "COIN_EMAMI_IRR");
 
-                if (usd) {
-                    document.getElementById("usd-price").innerText = usd.price.toLocaleString('fa-IR') + " تومان";
-                    document.getElementById("usd-card").classList.remove("loading");
-                }
-                if (gold) {
-                    document.getElementById("gold-price").innerText = gold.price.toLocaleString('fa-IR') + " تومان";
-                    document.getElementById("gold-card").classList.remove("loading");
-                }
-                if (coin) {
-                    document.getElementById("coin-price").innerText = coin.price.toLocaleString('fa-IR') + " تومان";
-                    document.getElementById("coin-card").classList.remove("loading");
-                }
+                if (usd) { document.getElementById("usd-price").innerText = usd.price.toLocaleString('fa-IR'); document.getElementById("usd-card").classList.remove("loading"); }
+                if (gold) { document.getElementById("gold-price").innerText = gold.price.toLocaleString('fa-IR'); document.getElementById("gold-card").classList.remove("loading"); }
+                if (coin) { document.getElementById("coin-price").innerText = coin.price.toLocaleString('fa-IR'); document.getElementById("coin-card").classList.remove("loading"); }
 
-                // گرفتن قیمت بیت‌کوین از CoinGecko
                 const btcRes = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd");
                 const btcData = await btcRes.json();
                 if (btcData.bitcoin) {
                     document.getElementById("btc-price").innerText = "$" + btcData.bitcoin.usd.toLocaleString('en-US');
                     document.getElementById("btc-card").classList.remove("loading");
                 }
-
             } catch (error) {
-                console.error("خطا در دریافت قیمت:", error);
-                document.querySelectorAll('.price').forEach(el => {
-                    el.innerText = "خطا در دریافت";
-                });
+                console.error("خطا در قیمت‌ها", error);
+            }
+        }
+        fetchPrices();
+
+        // ۲. دریافت اخبار از RSS
+        const feeds = {
+            'general': 'https://feeds.bbci.co.uk/persian/rss.xml',
+            'sport': 'https://www.varzesh3.com/rss',
+            'politics': 'https://www.isna.ir/rss/tp/14',
+            'economy': 'https://www.isna.ir/rss/tp/34',
+            'tech': 'https://www.isna.ir/rss/tp/41',
+            'photo': 'https://www.mehrnews.com/rss/tp/11'
+        };
+
+        const titles = {
+            'general': '📰 اخبار عمومی', 'sport': '⚽ اخبار ورزشی', 'politics': '🏛️ اخبار سیاسی', 
+            'economy': '💰 اخبار اقتصادی', 'tech': '💻 اخبار فناوری', 'photo': '📸 اخبار تصویری'
+        };
+
+        async function loadNews(category) {
+            tg.HapticFeedback.impactOccurred('medium');
+            
+            // تغییر صفحه
+            document.getElementById('main-view').style.display = 'none';
+            document.getElementById('news-container').style.display = 'block';
+            document.getElementById('news-title').innerText = titles[category];
+            document.getElementById('news-list').innerHTML = '<div class="loading-spinner">⏳ در حال دریافت اخبار...</div>';
+
+            try {
+                // برای جلوگیری از خطای CORS در مرورگر، از سرویس واسط استفاده می‌کنیم
+                const url = encodeURIComponent(feeds[category]);
+                const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${url}`);
+                const data = await response.json();
+
+                if (data.status === 'ok') {
+                    let html = '';
+                    // نمایش ۵ خبر اول
+                    data.items.slice(0, 5).forEach(item => {
+                        let date = item.pubDate ? new Date(item.pubDate).toLocaleDateString('fa-IR') : 'نامشخص';
+                        // حذف تگ‌های HTML از خلاصه خبر
+                        let cleanDesc = item.description.replace(/<[^>]*>?/gm, '').substring(0, 150) + '...';
+                        
+                        html += `
+                            <div class="news-item">
+                                <h3>${item.title}</h3>
+                                <p>${cleanDesc}</p>
+                                <div class="date">🕐 ${date}</div>
+                            </div>
+                        `;
+                    });
+                    document.getElementById('news-list').innerHTML = html;
+                } else {
+                    document.getElementById('news-list').innerHTML = '<div class="loading-spinner">❌ خطا در دریافت اخبار (فیلترشکن را بررسی کنید)</div>';
+                }
+            } catch (error) {
+                document.getElementById('news-list').innerHTML = '<div class="loading-spinner">❌ خطای شبکه (فیلترشکن را روشن کنید)</div>';
             }
         }
 
-        // اجرای تابع هنگام باز شدن صفحه
-        fetchPrices();
+        function goBack() {
+            tg.HapticFeedback.impactOccurred('light');
+            document.getElementById('news-container').style.display = 'none';
+            document.getElementById('main-view').style.display = 'block';
+        }
     </script>
 </body>
 </html>

@@ -3,158 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RX News | Pro</title>
+    <title>RX News | Ultra</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #09090b;
-            --bg-light: #18181b;
-            --primary: #6366f1;
-            --primary-glow: rgba(99, 102, 241, 0.4);
+            --bg: #050505;
+            --card: rgba(20, 20, 25, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --primary: #8b5cf6;
+            --primary-glow: rgba(139, 92, 246, 0.4);
             --secondary: #ec4899;
             --success: #10b981;
             --danger: #ef4444;
-            --text-main: #f8fafc;
-            --text-muted: #a1a1aa;
-            --glass: rgba(24, 24, 27, 0.6);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --text: #f8fafc;
+            --muted: #94a3b8;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; font-family: 'Vazirmatn', sans-serif; }
         
         body {
-            background-color: var(--bg-dark);
+            background-color: var(--bg);
             background-image: 
-                radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.15), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.15), transparent 25%);
-            color: var(--text-main);
+                radial-gradient(circle at 0% 0%, rgba(139, 92, 246, 0.15), transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.15), transparent 40%);
+            color: var(--text);
             min-height: 100vh;
             padding: 15px;
             padding-bottom: 50px;
             overflow-x: hidden;
         }
 
-        /* --- هدر و پروفایل --- */
-        .top-bar {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 25px; position: relative; z-index: 10;
-        }
+        /* --- هدر --- */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .user-profile {
             display: flex; align-items: center; gap: 10px;
-            background: var(--glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border); border-radius: 30px; padding: 5px 15px 5px 5px;
-            cursor: pointer; transition: 0.2s;
+            background: var(--card); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border); border-radius: 50px; padding: 4px 12px 4px 4px;
+            cursor: pointer; transition: 0.3s;
         }
-        .user-profile:active { transform: scale(0.95); }
-        .user-avatar { width: 35px; height: 35px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 1.2rem; }
+        .user-profile:active { transform: scale(0.95); box-shadow: 0 0 15px var(--primary-glow); }
+        .avatar-img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
+        .avatar-fallback { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 1.2rem; }
         .user-name { font-size: 0.9rem; font-weight: 700; }
         
-        .brand-title { font-size: 1.5rem; font-weight: 900; background: linear-gradient(90deg, #818cf8, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .brand { font-size: 1.6rem; font-weight: 900; background: linear-gradient(90deg, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; }
 
         /* --- کارت‌های قیمت --- */
         .prices-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
         .price-card {
-            background: var(--glass); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border); border-radius: 16px; padding: 15px;
-            position: relative; overflow: hidden; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+            background: var(--card); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border); border-radius: 20px; padding: 18px;
+            position: relative; overflow: hidden; box-shadow: 0 15px 35px -10px rgba(0,0,0,0.8);
+            transition: 0.3s;
         }
-        .price-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, transparent, var(--primary), transparent); opacity: 0.5; }
-        .price-header { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; }
-        .price-value { font-size: 1.2rem; font-weight: 900; color: var(--success); direction: ltr; text-align: right; }
-        .price-value.loading { color: var(--text-muted); animation: pulse 1.5s infinite; font-size: 1rem; }
+        .price-card:active { transform: translateY(-2px); }
+        .price-card::before { content: ''; position: absolute; top: 0; right: 0; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03)); }
+        .price-title { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .price-value { font-size: 1.3rem; font-weight: 900; color: var(--success); direction: ltr; text-align: right; text-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
+        .price-value.loading { color: var(--muted); animation: pulse 1.5s infinite; font-size: 1rem; text-shadow: none; }
 
-        /* --- منوها --- */
-        .section-title { font-size: 1.1rem; font-weight: 900; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-        .section-title::before { content: ''; display: block; width: 4px; height: 18px; background: var(--primary); border-radius: 4px; }
+        /* --- بخش‌بندی --- */
+        .section-header { font-size: 1.1rem; font-weight: 900; margin: 25px 0 15px 0; display: flex; align-items: center; gap: 8px; }
+        .section-header::before { content: ''; display: block; width: 5px; height: 20px; background: linear-gradient(to bottom, var(--primary), var(--secondary)); border-radius: 5px; }
         
-        .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 25px; }
+        .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
         .menu-btn {
-            background: var(--glass); border: 1px solid var(--glass-border); border-radius: 14px;
-            padding: 15px 5px; display: flex; flex-direction: column; align-items: center; gap: 8px;
-            color: white; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: 0.2s;
+            background: var(--card); border: 1px solid var(--glass-border); border-radius: 18px;
+            padding: 18px 10px; display: flex; flex-direction: column; align-items: center; gap: 10px;
+            color: white; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: 0.2s;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
         }
-        .menu-btn:active { background: var(--primary); transform: translateY(2px); box-shadow: 0 0 15px var(--primary-glow); }
-        .menu-btn .icon { font-size: 1.5rem; }
+        .menu-btn:active { background: var(--primary); transform: scale(0.95); box-shadow: 0 0 20px var(--primary-glow); }
+        .menu-btn .icon { font-size: 1.8rem; filter: drop-shadow(0 0 5px rgba(255,255,255,0.2)); }
 
-        /* --- بخش مزایا --- */
-        .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 25px; }
-        .feature-item {
-            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
-            border: 1px solid var(--glass-border); border-radius: 12px; padding: 12px;
-            display: flex; align-items: center; gap: 10px; font-size: 0.85rem;
+        /* --- پنل‌های داخلی --- */
+        .sub-view { display: none; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .back-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white; padding: 14px; border-radius: 14px; width: 100%; margin-bottom: 20px; font-size: 1rem; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; backdrop-filter: blur(10px); transition: 0.2s; }
+        .back-btn:active { background: var(--danger); box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+
+        /* --- اخبار --- */
+        .news-item { background: var(--card); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; margin-bottom: 15px; border-right: 4px solid var(--primary); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.5); }
+        .news-item h3 { font-size: 1.05rem; font-weight: 900; margin-bottom: 12px; line-height: 1.6; color: #e2e8f0; }
+        .news-item p { font-size: 0.9rem; color: var(--muted); line-height: 1.8; margin-bottom: 15px; text-align: justify; }
+        .news-meta { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--secondary); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; font-weight: 700; }
+
+        /* --- فرم‌ها و ورودی‌ها --- */
+        .form-box { background: var(--card); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; backdrop-filter: blur(10px); }
+        input[type="text"] {
+            width: 100%; padding: 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.4); color: white; font-size: 1rem; margin-bottom: 15px; outline: none; transition: 0.3s;
         }
-        .feature-icon { font-size: 1.2rem; }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--primary-glow); }
+        .action-btn { width: 100%; padding: 16px; border-radius: 14px; border: none; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; font-size: 1.05rem; font-weight: 900; cursor: pointer; transition: 0.2s; box-shadow: 0 8px 20px -5px var(--primary-glow); }
+        .action-btn:active { transform: scale(0.97); }
 
-        /* --- لینک‌ها --- */
-        .links-box { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 16px; padding: 15px; margin-bottom: 20px; text-align: center; }
-        .links-box p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px; }
-        .link-btn { display: block; width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white; text-decoration: none; font-weight: 700; font-size: 0.95rem; transition: 0.2s; }
-        .link-btn.telegram { background: rgba(56, 150, 229, 0.15); border-color: rgba(56, 150, 229, 0.3); color: #60a5fa; }
-        .link-btn.rubika { background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); color: #f87171; }
-        .link-btn:active { transform: scale(0.98); }
+        /* --- ماشین حساب --- */
+        .calc-screen { background: rgba(0,0,0,0.6); border-radius: 16px; padding: 20px; text-align: left; font-size: 2.5rem; font-weight: 900; color: var(--success); margin-bottom: 20px; direction: ltr; overflow-x: auto; border: 1px solid var(--glass-border); }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .calc-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 14px; padding: 20px; font-size: 1.3rem; font-weight: 900; color: white; cursor: pointer; transition: 0.1s; }
+        .calc-btn:active { background: var(--primary); transform: scale(0.9); }
+        .calc-btn.op { color: var(--secondary); }
+        .calc-btn.equal { background: var(--primary); grid-column: span 2; }
 
-        /* --- صفحات داخلی --- */
-        .sub-view { display: none; animation: slideUp 0.3s ease; }
-        .back-btn { background: var(--glass); border: 1px solid var(--glass-border); color: white; padding: 12px; border-radius: 12px; width: 100%; margin-bottom: 20px; font-size: 1rem; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .back-btn:active { background: var(--danger); }
+        /* --- کامنت‌ها --- */
+        .comment-box { display: flex; gap: 10px; margin-bottom: 20px; }
+        .comment-box input { margin-bottom: 0; }
+        .comment-item { background: rgba(255,255,255,0.03); border-radius: 14px; padding: 15px; margin-bottom: 10px; border-right: 3px solid var(--secondary); }
+        .comment-name { font-size: 0.8rem; color: var(--muted); margin-bottom: 5px; font-weight: 700; }
+        .comment-text { font-size: 0.9rem; line-height: 1.6; }
+        .comment-text.censored { color: #fca5a5; font-family: monospace; font-size: 1rem; letter-spacing: 2px; }
 
-        .news-item {
-            background: var(--glass); border: 1px solid var(--glass-border); border-radius: 16px; padding: 15px;
-            margin-bottom: 15px; border-right: 4px solid var(--primary);
-        }
-        .news-item h3 { font-size: 1rem; font-weight: 700; margin-bottom: 10px; line-height: 1.6; }
-        .news-item p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 12px; }
-        .news-meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: #fbbf24; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; }
-
-        .form-box { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; }
-        input[type="text"], input[type="number"] {
-            width: 100%; padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(0,0,0,0.3); color: white; font-size: 1rem; margin-bottom: 15px; outline: none; font-family: inherit;
-            transition: 0.2s;
-        }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 10px var(--primary-glow); }
-        .action-btn { width: 100%; padding: 15px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; font-size: 1rem; font-weight: 900; cursor: pointer; transition: 0.2s; box-shadow: 0 5px 15px var(--primary-glow); }
-        .action-btn:active { transform: scale(0.98); }
-        .result-box { margin-top: 15px; padding: 15px; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); border-radius: 12px; color: var(--success); font-size: 1rem; text-align: center; display: none; font-weight: 700; }
+        /* --- پروفایل --- */
+        .profile-card { text-align: center; padding: 30px 20px; }
+        .profile-avatar-lg { width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 20px auto; object-fit: cover; border: 3px solid var(--primary); box-shadow: 0 0 30px var(--primary-glow); }
 
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <!-- هدر -->
     <div class="top-bar">
         <div class="user-profile" onclick="showView('profile-view')">
-            <div class="user-avatar" id="header-avatar">H</div>
-            <div class="user-name" id="header-name">حسام</div>
+            <img id="header-avatar-img" class="avatar-img" src="" style="display:none;">
+            <div id="header-avatar-fallback" class="avatar-fallback">?</div>
+            <div class="user-name" id="header-name">کاربر</div>
         </div>
-        <div class="brand-title">RX Pro</div>
+        <div class="brand">RX Ultra</div>
     </div>
 
-    <!-- صفحه اصلی -->
     <div id="main-view">
+        <!-- قیمت‌ها -->
         <div class="prices-grid">
-            <div class="price-card">
-                <div class="price-header"><span>دلار آمریکا</span><span>💵</span></div>
-                <div class="price-value loading" id="usd-price">دریافت...</div>
-            </div>
-            <div class="price-card">
-                <div class="price-header"><span>طلای ۱۸ عیار</span><span>🥇</span></div>
-                <div class="price-value loading" id="gold-price">دریافت...</div>
-            </div>
-            <div class="price-card">
-                <div class="price-header"><span>سکه امامی</span><span>🪙</span></div>
-                <div class="price-value loading" id="coin-price">دریافت...</div>
-            </div>
-            <div class="price-card">
-                <div class="price-header"><span>بیت‌کوین</span><span>₿</span></div>
-                <div class="price-value loading" id="btc-price">دریافت...</div>
-            </div>
+            <div class="price-card"><div class="price-title"><span>دلار آمریکا</span>💵</div><div class="price-value loading" id="usd-price">...</div></div>
+            <div class="price-card"><div class="price-title"><span>طلای ۱۸ عیار</span>🥇</div><div class="price-value loading" id="gold-price">...</div></div>
+            <div class="price-card"><div class="price-title"><span>سکه امامی</span>🪙</div><div class="price-value loading" id="coin-price">...</div></div>
+            <div class="price-card"><div class="price-title"><span>بیت‌کوین</span>₿</div><div class="price-value loading" id="btc-price">...</div></div>
         </div>
 
-        <div class="section-title">اخبار هوشمند</div>
+        <!-- اخبار -->
+        <div class="section-header">دنیای اخبار</div>
         <div class="menu-grid">
             <button class="menu-btn" onclick="loadNews('general', 'اخبار عمومی')"><span class="icon">📰</span>عمومی</button>
             <button class="menu-btn" onclick="loadNews('sport', 'اخبار ورزشی')"><span class="icon">⚽</span>ورزشی</button>
@@ -164,93 +153,136 @@
             <button class="menu-btn" onclick="loadNews('photo', 'اخبار تصویری')"><span class="icon">📸</span>تصویری</button>
         </div>
 
-        <div class="section-title">ابزارهای پیشرفته</div>
+        <!-- ابزارها -->
+        <div class="section-header">جعبه ابزار</div>
         <div class="menu-grid" style="grid-template-columns: 1fr 1fr;">
-            <button class="menu-btn" onclick="showView('calc-view')"><span class="icon">🧮</span>تبدیل ارز</button>
+            <button class="menu-btn" onclick="showView('calc-view')"><span class="icon">🔢</span>ماشین‌حساب</button>
             <button class="menu-btn" onclick="showView('trans-view')"><span class="icon">🌐</span>مترجم</button>
         </div>
 
-        <div class="section-title">مزایای RX Pro</div>
-        <div class="features-grid">
-            <div class="feature-item"><span class="feature-icon">⚡</span>سرعت بالا</div>
-            <div class="feature-item"><span class="feature-icon">🛡️</span>امنیت کامل</div>
-            <div class="feature-item"><span class="feature-icon">🎯</span>دقت بالا</div>
-            <div class="feature-item"><span class="feature-icon">📱</span>دسترسی آسان</div>
-            <div class="feature-item"><span class="feature-icon">🌍</span>پوشش جهانی</div>
-            <div class="feature-item"><span class="feature-icon">🔄</span>بروزرسانی زنده</div>
+        <!-- کامنت‌ها -->
+        <div class="section-header">نظرات کاربران</div>
+        <div class="form-box">
+            <div class="comment-box">
+                <input type="text" id="comment-input" placeholder="نظر خود را بنویسید..." style="margin-bottom:0;">
+                <button class="action-btn" style="width: 80px; padding: 0;" onclick="addComment()">ارسال</button>
+            </div>
+            <div id="comments-list" style="margin-top: 15px;"></div>
         </div>
 
-        <div class="links-box">
-            <p>ما را در پلتفرم‌های دیگر دنبال کنید</p>
-            <a href="https://t.me/RXNwes_ir_bot" class="link-btn telegram" target="_blank">✈️ ربات تلگرام</a>
-            <a href="https://rubika.ir/RXNwes_ir_bot" class="link-btn rubika" target="_blank">🔴 ربات روبیکا</a>
+        <!-- لینک‌ها -->
+        <div class="section-header">ارتباط با ما</div>
+        <div style="display:flex; gap:10px;">
+            <a href="https://t.me/RXNwes_ir_bot" class="action-btn" style="text-decoration:none; text-align:center; background: rgba(56, 150, 229, 0.2); border: 1px solid #3896e5; box-shadow: none;">تلگرام</a>
+            <a href="https://rubika.ir/RXNwes_ir_bot" class="action-btn" style="text-decoration:none; text-align:center; background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; box-shadow: none;">روبیکا</a>
         </div>
     </div>
 
-    <!-- صفحه اخبار -->
+    <!-- اخبار -->
     <div id="news-view" class="sub-view">
         <button class="back-btn" onclick="goBack()">🔙 بازگشت</button>
-        <div class="section-title" id="news-title">در حال بارگذاری...</div>
+        <div class="section-header" id="news-title">...</div>
         <div id="news-list"></div>
     </div>
 
-    <!-- صفحه تبدیل ارز -->
+    <!-- ماشین حساب -->
     <div id="calc-view" class="sub-view">
         <button class="back-btn" onclick="goBack()">🔙 بازگشت</button>
-        <div class="section-title">🧮 ماشین‌حساب پیشرفته</div>
         <div class="form-box">
-            <p style="margin-bottom: 15px; font-size: 0.85rem; color: var(--text-muted);">مثال: 50 دلار / 1000 تومان / 0.5 بیت‌کوین</p>
-            <input type="text" id="calc-input" placeholder="مبلغ و واحد را وارد کنید...">
-            <button class="action-btn" onclick="doConvert()">تبدیل کن</button>
-            <div id="calc-result" class="result-box"></div>
+            <div class="calc-screen" id="calc-screen">0</div>
+            <div class="calc-grid">
+                <button class="calc-btn op" onclick="calcInput('C')">C</button>
+                <button class="calc-btn op" onclick="calcInput('/')">÷</button>
+                <button class="calc-btn op" onclick="calcInput('*')">×</button>
+                <button class="calc-btn op" onclick="calcInput('-')">-</button>
+                
+                <button class="calc-btn" onclick="calcInput('7')">7</button>
+                <button class="calc-btn" onclick="calcInput('8')">8</button>
+                <button class="calc-btn" onclick="calcInput('9')">9</button>
+                <button class="calc-btn op" onclick="calcInput('+')">+</button>
+                
+                <button class="calc-btn" onclick="calcInput('4')">4</button>
+                <button class="calc-btn" onclick="calcInput('5')">5</button>
+                <button class="calc-btn" onclick="calcInput('6')">6</button>
+                <button class="calc-btn equal" style="grid-row: span 2;" onclick="calcInput('=')">=</button>
+                
+                <button class="calc-btn" onclick="calcInput('1')">1</button>
+                <button class="calc-btn" onclick="calcInput('2')">2</button>
+                <button class="calc-btn" onclick="calcInput('3')">3</button>
+                
+                <button class="calc-btn" style="grid-column: span 3;" onclick="calcInput('0')">0</button>
+            </div>
         </div>
     </div>
 
-    <!-- صفحه مترجم -->
+    <!-- مترجم -->
     <div id="trans-view" class="sub-view">
         <button class="back-btn" onclick="goBack()">🔙 بازگشت</button>
-        <div class="section-title">🌐 مترجم هوشمند</div>
         <div class="form-box">
             <input type="text" id="trans-input" placeholder="متن فارسی یا انگلیسی...">
             <button class="action-btn" onclick="doTranslate()">ترجمه کن</button>
-            <div id="trans-result" class="result-box"></div>
+            <div id="trans-result" style="margin-top: 15px; padding: 15px; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); border-radius: 14px; color: var(--success); display: none; text-align: center;"></div>
         </div>
     </div>
 
-    <!-- صفحه پروفایل کاربر -->
+    <!-- پروفایل -->
     <div id="profile-view" class="sub-view">
         <button class="back-btn" onclick="goBack()">🔙 بازگشت</button>
-        <div class="section-title">👤 پروفایل شما</div>
-        <div class="form-box" style="text-align: center;">
-            <div class="user-avatar" id="profile-avatar" style="width: 80px; height: 80px; font-size: 2.5rem; margin: 0 auto 20px auto;">H</div>
-            <p style="margin-bottom: 20px; color: var(--text-muted); font-size: 0.9rem;">آیدی تلگرام: <span id="profile-id" style="color:white; direction:ltr; display:inline-block;">...</span></p>
+        <div class="form-box profile-card">
+            <img id="profile-avatar-img" class="profile-avatar-lg" src="" style="display:none;">
+            <div id="profile-avatar-fallback" class="avatar-fallback" style="width:100px; height:100px; font-size:3rem; margin: 0 auto 20px auto;"></div>
+            
+            <h2 style="margin-bottom: 5px;" id="profile-display-name">کاربر</h2>
+            <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 25px; direction: ltr;">ID: <span id="profile-id">...</span></p>
             
             <input type="text" id="edit-name" placeholder="نام نمایشی جدید...">
             <button class="action-btn" onclick="saveProfile()">ذخیره تغییرات</button>
-            <p style="margin-top: 15px; font-size: 0.75rem; color: var(--text-muted);">* تغییرات فقط در این مینی‌اپ اعمال می‌شود و به اطلاعات تلگرام شما دسترسی ندارد.</p>
+            <p style="margin-top: 15px; font-size: 0.75rem; color: var(--muted);">* اطلاعات تلگرام شما محفوظ است.</p>
         </div>
     </div>
 
     <script>
-        // راه‌اندازی تلگرام
         const tg = window.Telegram.WebApp;
         tg.expand();
         tg.ready();
 
-        // --- مدیریت پروفایل ---
+        // --- مدیریت پروفایل و عکس ---
+        const tgUser = tg.initDataUnsafe?.user || { id: "نامشخص", first_name: "کاربر", photo_url: null };
         let userProfile = {
-            id: tg.initDataUnsafe?.user?.id || "نامشخص",
-            firstName: tg.initDataUnsafe?.user?.first_name || "کاربر",
-            displayName: localStorage.getItem('rx_display_name') || tg.initDataUnsafe?.user?.first_name || "کاربر"
+            id: tgUser.id,
+            firstName: tgUser.first_name,
+            photoUrl: tgUser.photo_url,
+            displayName: localStorage.getItem('rx_ultra_name') || tgUser.first_name
         };
 
         function initProfile() {
+            // هدر
             document.getElementById('header-name').innerText = userProfile.displayName;
-            document.getElementById('header-avatar').innerText = userProfile.displayName.charAt(0).toUpperCase();
+            const hImg = document.getElementById('header-avatar-img');
+            const hFall = document.getElementById('header-avatar-fallback');
             
-            document.getElementById('profile-avatar').innerText = userProfile.displayName.charAt(0).toUpperCase();
+            if(userProfile.photoUrl) {
+                hImg.src = userProfile.photoUrl;
+                hImg.style.display = 'block';
+                hFall.style.display = 'none';
+            } else {
+                hFall.innerText = userProfile.displayName.charAt(0).toUpperCase();
+            }
+
+            // صفحه پروفایل
+            document.getElementById('profile-display-name').innerText = userProfile.displayName;
             document.getElementById('profile-id').innerText = userProfile.id;
             document.getElementById('edit-name').value = userProfile.displayName;
+
+            const pImg = document.getElementById('profile-avatar-img');
+            const pFall = document.getElementById('profile-avatar-fallback');
+            if(userProfile.photoUrl) {
+                pImg.src = userProfile.photoUrl;
+                pImg.style.display = 'block';
+                pFall.style.display = 'none';
+            } else {
+                pFall.innerText = userProfile.displayName.charAt(0).toUpperCase();
+            }
         }
         initProfile();
 
@@ -258,14 +290,14 @@
             const newName = document.getElementById('edit-name').value.trim();
             if(newName) {
                 userProfile.displayName = newName;
-                localStorage.setItem('rx_display_name', newName);
+                localStorage.setItem('rx_ultra_name', newName);
                 initProfile();
                 tg.HapticFeedback.notificationOccurred('success');
-                alert("پروفایل با موفقیت بروزرسانی شد!");
+                tg.showAlert("پروفایل بروزرسانی شد.");
             }
         }
 
-        // --- دریافت قیمت‌ها ---
+        // --- قیمت‌ها ---
         async function getPrices() {
             try {
                 const res = await fetch("https://raw.githubusercontent.com/iran-market/iran-market.github.io/main/data/popular.json");
@@ -292,14 +324,14 @@
         }
         getPrices();
 
-        // --- اخبار (با آدرس جدید ایران اینترنشنال برای ورزشی) ---
+        // --- اخبار (تفکیک منابع) ---
         const feeds = {
             'general': 'https://feeds.bbci.co.uk/persian/rss.xml',
-            'sport': 'https://www.iranintl.com/feed', // تغییر به ایران اینترنشنال
-            'politics': 'https://www.isna.ir/rss/tp/14',
-            'economy': 'https://www.isna.ir/rss/tp/34',
-            'tech': 'https://www.isna.ir/rss/tp/41',
-            'photo': 'https://www.mehrnews.com/rss/tp/11'
+            'politics': 'https://feeds.bbci.co.uk/persian/rss.xml',
+            'sport': 'https://www.iranintl.com/feed',
+            'economy': 'https://www.iranintl.com/feed',
+            'tech': 'https://www.iranintl.com/feed',
+            'photo': 'https://www.iranintl.com/feed'
         };
 
         async function loadNews(category, title) {
@@ -309,45 +341,47 @@
             document.getElementById('news-list').innerHTML = '<div style="text-align:center; color:var(--primary); margin-top:20px;">⏳ در حال دریافت...</div>';
 
             try {
-                let finalUrl = feeds[category];
-                // فیلتر ورزشی از ایران اینترنشنال (چون فیدش همه چیز داره)
-                let isSport = category === 'sport';
-                
-                const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(finalUrl)}`;
+                const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feeds[category])}`;
                 const res = await fetch(url);
                 const data = await res.json();
 
                 if(data.status === 'ok' && data.items.length > 0) {
                     let items = data.items;
                     
-                    // اگه ورزشی بود، فقط اخبار ورزشی رو فیلتر کن
-                    if(isSport) {
-                        const keywords = ["ورزش", "فوتبال", "لیگ", "تیم", "قهرمانی", "بازی", "المپیک"];
-                        items = items.filter(item => keywords.some(kw => item.title.includes(kw) || item.description.includes(kw)));
+                    // فیلتر برای دسته‌های ایران اینترنشنال (چون فید عمومی است)
+                    if(['sport', 'economy', 'tech', 'photo'].includes(category)) {
+                        const keywords = {
+                            'sport': ["ورزش", "فوتبال", "لیگ", "تیم", "قهرمانی", "بازی"],
+                            'economy': ["اقتصاد", "دلار", "تورم", "بازار", "سکه", "طلا", "بانک"],
+                            'tech': ["فناوری", "تکنولوژی", "اینترنت", "هوش مصنوعی", "موبایل", "کامپیوتر"],
+                            'photo': ["عکس", "تصویر", "گالری"]
+                        };
+                        items = items.filter(item => keywords[category].some(kw => item.title.includes(kw) || item.description.includes(kw)));
                     }
 
                     if(items.length === 0) {
-                        document.getElementById('news-list').innerHTML = '<div style="text-align:center; color:var(--danger); margin-top:20px;">❌ خبری یافت نشد.</div>';
+                        document.getElementById('news-list').innerHTML = '<div style="text-align:center; color:var(--danger); margin-top:20px;">❌ خبری در این دسته یافت نشد.</div>';
                         return;
                     }
 
                     let html = '';
                     items.slice(0, 5).forEach(item => {
                         let date = item.pubDate ? new Date(item.pubDate).toLocaleDateString('fa-IR') : 'نامشخص';
-                        let desc = item.description.replace(/<[^>]*>?/gm, '').substring(0, 100) + '...';
+                        // متن کامل خبر (بدون تگ)
+                        let fullDesc = item.description.replace(/<[^>]*>?/gm, '');
                         html += `
                             <div class="news-item">
                                 <h3>${item.title}</h3>
-                                <p>${desc}</p>
+                                <p>${fullDesc}</p>
                                 <div class="news-meta">
                                     <span>🕐 ${date}</span>
-                                    <span style="color: var(--primary); font-weight: 900;" onclick="tg.openLink('${item.link}')">مشاهده ↗</span>
+                                    <span style="color: var(--primary);" onclick="tg.openLink('${item.link}')">مشاهده کامل ↗</span>
                                 </div>
                             </div>`;
                     });
                     document.getElementById('news-list').innerHTML = html;
                 } else {
-                    document.getElementById('news-list').innerHTML = '<div style="text-align:center; color:var(--danger); margin-top:20px;">❌ خبری یافت نشد (فیلترشکن را بررسی کنید).</div>';
+                    document.getElementById('news-list').innerHTML = '<div style="text-align:center; color:var(--danger); margin-top:20px;">❌ خطا در دریافت.</div>';
                 }
             } catch(e) {
                 document.getElementById('news-list').innerHTML = '<div style="text-align:center; color:var(--danger); margin-top:20px;">❌ خطای شبکه.</div>';
@@ -355,58 +389,79 @@
         }
 
         // --- ماشین حساب ---
-        async function doConvert() {
-            const text = document.getElementById('calc-input').value.toLowerCase();
-            const resultBox = document.getElementById('calc-result');
-            resultBox.style.display = 'none';
-
-            const match = text.match(/([\d\.]+)\s*(دلار|یورو|تومان|بیت|bitcoin|btc|eth|اتریوم|پوند|dollar)/);
-            if(!match) {
-                resultBox.style.display = 'block'; resultBox.style.background = 'rgba(239, 68, 68, 0.1)'; resultBox.style.borderColor = 'var(--danger)'; resultBox.style.color = 'var(--danger)'; resultBox.innerText = "❌ فرمت اشتباه است.";
-                return;
+        let calcStr = "0";
+        function calcInput(val) {
+            tg.HapticFeedback.impactOccurred('light');
+            if(val === 'C') { calcStr = "0"; }
+            else if(val === '=') {
+                try { calcStr = eval(calcStr).toString(); } catch { calcStr = "Error"; }
             }
-
-            const amount = parseFloat(match[1]); const curr = match[2];
-            resultBox.innerText = "⏳ در حال محاسبه..."; resultBox.style.display = 'block';
-            resultBox.style.background = 'rgba(16, 185, 129, 0.1)'; resultBox.style.borderColor = 'var(--success)'; resultBox.style.color = 'var(--success)';
-
-            try {
-                const res = await fetch("https://raw.githubusercontent.com/iran-market/iran-market.github.io/main/data/popular.json");
-                const data = await res.json();
-                const rates = data.data;
-                const usd = rates.find(x => x.symbol === "USD_IRR_FREE")?.price || 0;
-                const eur = rates.find(x => x.symbol === "EUR_IRR_FREE")?.price || 0;
-
-                let finalMsg = "";
-                if(curr.includes("دلار") || curr.includes("dollar")) finalMsg = `${amount} دلار = ${(amount * usd).toLocaleString('fa-IR')} تومان`;
-                else if(curr.includes("یورو")) finalMsg = `${amount} یورو = ${(amount * eur).toLocaleString('fa-IR')} تومان`;
-                else if(curr.includes("تومان")) finalMsg = `${amount.toLocaleString('fa-IR')} تومان = ${(amount / usd).toFixed(2)} دلار`;
-                else if(curr.includes("بیت") || curr.includes("btc") || curr.includes("bitcoin")) {
-                    const btcRes = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd");
-                    const btcData = await btcRes.json();
-                    finalMsg = `${amount} بیت‌کوین = ${(amount * btcData.bitcoin.usd * usd).toLocaleString('fa-IR')} تومان`;
-                }
-                resultBox.innerText = finalMsg;
-            } catch(e) { resultBox.innerText = "❌ خطا در دریافت قیمت."; }
+            else {
+                if(calcStr === "0" || calcStr === "Error") calcStr = val;
+                else calcStr += val;
+            }
+            document.getElementById('calc-screen').innerText = calcStr;
         }
 
         // --- مترجم ---
         async function doTranslate() {
             const text = document.getElementById('trans-input').value;
-            const resultBox = document.getElementById('trans-result');
+            const resBox = document.getElementById('trans-result');
             if(!text) return;
-            
-            resultBox.style.display = 'block'; resultBox.innerText = "⏳ در حال ترجمه...";
+            resBox.style.display = 'block'; resBox.innerText = "⏳ در حال ترجمه...";
             const isFa = /[\u0600-\u06FF]/.test(text);
-            
             try {
                 const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${isFa ? 'fa|en' : 'en|fa'}`);
                 const data = await res.json();
-                resultBox.innerText = data.responseData.translatedText;
-            } catch(e) { resultBox.innerText = "❌ خطا در ترجمه."; }
+                resBox.innerText = data.responseData.translatedText;
+            } catch(e) { resBox.innerText = "❌ خطا در ترجمه."; }
         }
 
-        // --- مدیریت صفحات ---
+        // --- کامنت‌ها و سانسور ---
+        let comments = JSON.parse(localStorage.getItem('rx_comments') || '[]');
+
+        function renderComments() {
+            const list = document.getElementById('comments-list');
+            if(comments.length === 0) {
+                list.innerHTML = '<div style="text-align:center; color:var(--muted); font-size:0.8rem;">هنوز نظری ثبت نشده است.</div>';
+                return;
+            }
+            list.innerHTML = comments.map(c => `
+                <div class="comment-item">
+                    <div class="comment-name">${c.name}</div>
+                    <div class="comment-text ${c.isCensored ? 'censored' : ''}">${c.text}</div>
+                </div>
+            `).join('');
+        }
+        renderComments();
+
+        function addComment() {
+            const input = document.getElementById('comment-input');
+            let text = input.value.trim();
+            if(!text) return;
+
+            // فیلتر کلمات رکیک
+            const badWords = ["پاتریک", "احمق", "خنگ", "کص", "کیر", "گاییدم", "لعنتی", "بیشعور", "مادرخراب"];
+            let isCensored = false;
+            
+            badWords.forEach(word => {
+                // ساخت الگوی تشخیص با فاصله و نقطه
+                let pattern = word.split('').join('[\\s\\.]*');
+                let regex = new RegExp(pattern, 'gi');
+                if(regex.test(text)) {
+                    text = text.replace(regex, '***');
+                    isCensored = true;
+                }
+            });
+
+            comments.unshift({ name: userProfile.displayName, text: text, isCensored: isCensored });
+            localStorage.setItem('rx_comments', JSON.stringify(comments));
+            input.value = '';
+            renderComments();
+            tg.HapticFeedback.notificationOccurred('success');
+        }
+
+        // --- ناوبری ---
         function showView(viewId) {
             tg.HapticFeedback.impactOccurred('light');
             document.getElementById('main-view').style.display = 'none';

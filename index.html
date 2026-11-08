@@ -3,114 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RX News</title>
+    <title>RX News | Pro</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0f172a; --card: rgba(30, 41, 59, 0.8); --text: #f8fafc; --muted: #94a3b8; --accent: #3b82f6; --danger: #ef4444;
+            --bg-dark: #09090b;
+            --bg-light: #18181b;
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --secondary: #ec4899;
+            --success: #10b981;
+            --danger: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #a1a1aa;
+            --glass: rgba(24, 24, 27, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
         }
+
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; font-family: 'Vazirmatn', sans-serif; }
+        
         body {
-            background-color: var(--bg); background-image: radial-gradient(circle at top right, #1e1b4b, #0f172a);
-            color: var(--text); min-height: 100vh; padding: 20px; padding-bottom: 50px;
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.15), transparent 25%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 15px;
+            padding-bottom: 50px;
+            overflow-x: hidden;
         }
-        .header { text-align: center; margin-bottom: 25px; }
-        .header h1 { font-size: 1.8rem; background: linear-gradient(90deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        /* قیمت‌ها */
-        .prices-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 25px; }
-        .price-card { background: var(--card); border-radius: 12px; padding: 15px 10px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
-        .price-card .icon { font-size: 1.5rem; margin-bottom: 5px; }
-        .price-card .title { font-size: 0.8rem; font-weight: 700; margin-bottom: 5px; }
-        .price-card .price { font-size: 0.9rem; color: #34d399; font-weight: 700; }
-        .loading-pulse { animation: pulse 1.5s infinite; color: var(--muted) !important; }
 
-        /* منوها */
-        .menu-title { font-size: 1.1rem; margin-bottom: 15px; border-right: 4px solid var(--accent); padding-right: 10px; }
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        /* --- هدر و پروفایل --- */
+        .top-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 25px; position: relative; z-index: 10;
+        }
+        .user-profile {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border); border-radius: 30px; padding: 5px 15px 5px 5px;
+            cursor: pointer; transition: 0.2s;
+        }
+        .user-profile:active { transform: scale(0.95); }
+        .user-avatar { width: 35px; height: 35px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 1.2rem; }
+        .user-name { font-size: 0.9rem; font-weight: 700; }
+        
+        .brand-title { font-size: 1.5rem; font-weight: 900; background: linear-gradient(90deg, #818cf8, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* --- کارت‌های قیمت --- */
+        .prices-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
+        .price-card {
+            background: var(--glass); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border); border-radius: 16px; padding: 15px;
+            position: relative; overflow: hidden; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+        }
+        .price-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, transparent, var(--primary), transparent); opacity: 0.5; }
+        .price-header { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; }
+        .price-value { font-size: 1.2rem; font-weight: 900; color: var(--success); direction: ltr; text-align: right; }
+        .price-value.loading { color: var(--text-muted); animation: pulse 1.5s infinite; font-size: 1rem; }
+
+        /* --- منوها --- */
+        .section-title { font-size: 1.1rem; font-weight: 900; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .section-title::before { content: ''; display: block; width: 4px; height: 18px; background: var(--primary); border-radius: 4px; }
+        
+        .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 25px; }
         .menu-btn {
-            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px; padding: 15px 5px; text-align: center; cursor: pointer;
-            color: white; font-size: 0.8rem; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;
+            background: var(--glass); border: 1px solid var(--glass-border); border-radius: 14px;
+            padding: 15px 5px; display: flex; flex-direction: column; align-items: center; gap: 8px;
+            color: white; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: 0.2s;
         }
-        .menu-btn:active { background: var(--accent); transform: scale(0.95); }
-        .menu-btn .emoji { font-size: 1.5rem; }
+        .menu-btn:active { background: var(--primary); transform: translateY(2px); box-shadow: 0 0 15px var(--primary-glow); }
+        .menu-btn .icon { font-size: 1.5rem; }
 
-        /* بخش‌های داخلی (اخبار، ماشین حساب، مترجم) */
-        .sub-view { display: none; animation: fadeIn 0.3s ease; }
-        .back-btn { background: var(--danger); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 1rem; width: 100%; margin-bottom: 20px; cursor: pointer; }
-        
-        .news-item { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 15px; border-right: 4px solid var(--accent); }
-        .news-item h3 { font-size: 1rem; margin-bottom: 10px; line-height: 1.6; }
-        .news-item p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; margin-bottom: 10px; }
-        .news-meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: #fbbf24; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); }
-        
-        /* فرم‌ها */
-        .form-box { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); }
-        input[type="text"] {
-            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(0,0,0,0.2); color: white; font-size: 1rem; margin-bottom: 15px; outline: none;
+        /* --- بخش مزایا --- */
+        .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 25px; }
+        .feature-item {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+            border: 1px solid var(--glass-border); border-radius: 12px; padding: 12px;
+            display: flex; align-items: center; gap: 10px; font-size: 0.85rem;
         }
-        input[type="text"]:focus { border-color: var(--accent); }
-        .action-btn {
-            width: 100%; padding: 12px; border-radius: 8px; border: none; background: var(--accent);
-            color: white; font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.2s;
-        }
-        .action-btn:active { transform: scale(0.98); background: #2563eb; }
-        .result-box { margin-top: 15px; padding: 15px; background: rgba(52, 211, 153, 0.1); border: 1px solid #34d399; border-radius: 8px; color: #34d399; font-size: 1rem; text-align: center; display: none; }
+        .feature-icon { font-size: 1.2rem; }
 
-        .spinner { text-align: center; font-size: 1.2rem; color: var(--accent); margin-top: 20px; }
+        /* --- لینک‌ها --- */
+        .links-box { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 16px; padding: 15px; margin-bottom: 20px; text-align: center; }
+        .links-box p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px; }
+        .link-btn { display: block; width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white; text-decoration: none; font-weight: 700; font-size: 0.95rem; transition: 0.2s; }
+        .link-btn.telegram { background: rgba(56, 150, 229, 0.15); border-color: rgba(56, 150, 229, 0.3); color: #60a5fa; }
+        .link-btn.rubika { background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); color: #f87171; }
+        .link-btn:active { transform: scale(0.98); }
+
+        /* --- صفحات داخلی --- */
+        .sub-view { display: none; animation: slideUp 0.3s ease; }
+        .back-btn { background: var(--glass); border: 1px solid var(--glass-border); color: white; padding: 12px; border-radius: 12px; width: 100%; margin-bottom: 20px; font-size: 1rem; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .back-btn:active { background: var(--danger); }
+
+        .news-item {
+            background: var(--glass); border: 1px solid var(--glass-border); border-radius: 16px; padding: 15px;
+            margin-bottom: 15px; border-right: 4px solid var(--primary);
+        }
+        .news-item h3 { font-size: 1rem; font-weight: 700; margin-bottom: 10px; line-height: 1.6; }
+        .news-item p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 12px; }
+        .news-meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: #fbbf24; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; }
+
+        .form-box { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; }
+        input[type="text"], input[type="number"] {
+            width: 100%; padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.3); color: white; font-size: 1rem; margin-bottom: 15px; outline: none; font-family: inherit;
+            transition: 0.2s;
+        }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 10px var(--primary-glow); }
+        .action-btn { width: 100%; padding: 15px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; font-size: 1rem; font-weight: 900; cursor: pointer; transition: 0.2s; box-shadow: 0 5px 15px var(--primary-glow); }
+        .action-btn:active { transform: scale(0.98); }
+        .result-box { margin-top: 15px; padding: 15px; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); border-radius: 12px; color: var(--success); font-size: 1rem; text-align: center; display: none; font-weight: 700; }
+
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>RX News</h1>
-        <p>پنل هوشمند</p>
+    <!-- هدر -->
+    <div class="top-bar">
+        <div class="user-profile" onclick="showView('profile-view')">
+            <div class="user-avatar" id="header-avatar">H</div>
+            <div class="user-name" id="header-name">حسام</div>
+        </div>
+        <div class="brand-title">RX Pro</div>
     </div>
 
     <!-- صفحه اصلی -->
     <div id="main-view">
         <div class="prices-grid">
-            <div class="price-card"><div class="icon">💵</div><div class="title">دلار آزاد</div><div class="price loading-pulse" id="usd-price">...</div></div>
-            <div class="price-card"><div class="icon">🥇</div><div class="title">طلای ۱۸</div><div class="price loading-pulse" id="gold-price">...</div></div>
-            <div class="price-card"><div class="icon">🪙</div><div class="title">سکه امامی</div><div class="price loading-pulse" id="coin-price">...</div></div>
-            <div class="price-card"><div class="icon">₿</div><div class="title">بیت‌کوین</div><div class="price loading-pulse" id="btc-price">...</div></div>
+            <div class="price-card">
+                <div class="price-header"><span>دلار آمریکا</span><span>💵</span></div>
+                <div class="price-value loading" id="usd-price">دریافت...</div>
+            </div>
+            <div class="price-card">
+                <div class="price-header"><span>طلای ۱۸ عیار</span><span>🥇</span></div>
+                <div class="price-value loading" id="gold-price">دریافت...</div>
+            </div>
+            <div class="price-card">
+                <div class="price-header"><span>سکه امامی</span><span>🪙</span></div>
+                <div class="price-value loading" id="coin-price">دریافت...</div>
+            </div>
+            <div class="price-card">
+                <div class="price-header"><span>بیت‌کوین</span><span>₿</span></div>
+                <div class="price-value loading" id="btc-price">دریافت...</div>
+            </div>
         </div>
 
-        <div class="menu-title">📰 دسته‌بندی اخبار</div>
+        <div class="section-title">اخبار هوشمند</div>
         <div class="menu-grid">
-            <button class="menu-btn" onclick="loadNews('general', 'اخبار عمومی')"><span class="emoji">📰</span>عمومی</button>
-            <button class="menu-btn" onclick="loadNews('sport', 'اخبار ورزشی')"><span class="emoji">⚽</span>ورزشی</button>
-            <button class="menu-btn" onclick="loadNews('politics', 'اخبار سیاسی')"><span class="emoji">🏛️</span>سیاسی</button>
-            <button class="menu-btn" onclick="loadNews('economy', 'اخبار اقتصادی')"><span class="emoji">💰</span>اقتصادی</button>
-            <button class="menu-btn" onclick="loadNews('tech', 'اخبار فناوری')"><span class="emoji">💻</span>فناوری</button>
-            <button class="menu-btn" onclick="loadNews('photo', 'اخبار تصویری')"><span class="emoji">📸</span>تصویری</button>
+            <button class="menu-btn" onclick="loadNews('general', 'اخبار عمومی')"><span class="icon">📰</span>عمومی</button>
+            <button class="menu-btn" onclick="loadNews('sport', 'اخبار ورزشی')"><span class="icon">⚽</span>ورزشی</button>
+            <button class="menu-btn" onclick="loadNews('politics', 'اخبار سیاسی')"><span class="icon">🏛️</span>سیاسی</button>
+            <button class="menu-btn" onclick="loadNews('economy', 'اخبار اقتصادی')"><span class="icon">💰</span>اقتصادی</button>
+            <button class="menu-btn" onclick="loadNews('tech', 'اخبار فناوری')"><span class="icon">💻</span>فناوری</button>
+            <button class="menu-btn" onclick="loadNews('photo', 'اخبار تصویری')"><span class="icon">📸</span>تصویری</button>
         </div>
 
-        <div class="menu-title">🛠 ابزارهای کاربردی</div>
+        <div class="section-title">ابزارهای پیشرفته</div>
         <div class="menu-grid" style="grid-template-columns: 1fr 1fr;">
-            <button class="menu-btn" onclick="showView('calc-view')"><span class="emoji">🧮</span>تبدیل ارز</button>
-            <button class="menu-btn" onclick="showView('trans-view')"><span class="emoji">🌐</span>مترجم</button>
+            <button class="menu-btn" onclick="showView('calc-view')"><span class="icon">🧮</span>تبدیل ارز</button>
+            <button class="menu-btn" onclick="showView('trans-view')"><span class="icon">🌐</span>مترجم</button>
+        </div>
+
+        <div class="section-title">مزایای RX Pro</div>
+        <div class="features-grid">
+            <div class="feature-item"><span class="feature-icon">⚡</span>سرعت بالا</div>
+            <div class="feature-item"><span class="feature-icon">🛡️</span>امنیت کامل</div>
+            <div class="feature-item"><span class="feature-icon">🎯</span>دقت بالا</div>
+            <div class="feature-item"><span class="feature-icon">📱</span>دسترسی آسان</div>
+            <div class="feature-item"><span class="feature-icon">🌍</span>پوشش جهانی</div>
+            <div class="feature-item"><span class="feature-icon">🔄</span>بروزرسانی زنده</div>
+        </div>
+
+        <div class="links-box">
+            <p>ما را در پلتفرم‌های دیگر دنبال کنید</p>
+            <a href="https://t.me/RXNwes_ir_bot" class="link-btn telegram" target="_blank">✈️ ربات تلگرام</a>
+            <a href="https://rubika.ir/RXNwes_ir_bot" class="link-btn rubika" target="_blank">🔴 ربات روبیکا</a>
         </div>
     </div>
 
     <!-- صفحه اخبار -->
     <div id="news-view" class="sub-view">
-        <button class="back-btn" onclick="goBack()">🔙 بازگشت به منو</button>
-        <div class="menu-title" id="news-title">در حال بارگذاری...</div>
+        <button class="back-btn" onclick="goBack()">🔙 بازگشت</button>
+        <div class="section-title" id="news-title">در حال بارگذاری...</div>
         <div id="news-list"></div>
     </div>
 
     <!-- صفحه تبدیل ارز -->
     <div id="calc-view" class="sub-view">
-        <button class="back-btn" onclick="goBack()">🔙 بازگشت به منو</button>
-        <div class="menu-title">🧮 تبدیل ارز</div>
+        <button class="back-btn" onclick="goBack()">🔙 بازگشت</button>
+        <div class="section-title">🧮 ماشین‌حساب پیشرفته</div>
         <div class="form-box">
-            <p style="margin-bottom: 10px; font-size: 0.9rem; color: var(--muted);">مثلاً بنویسید: 50 دلار / 100 یورو / 0.5 بیت کوین / 1000000 تومان</p>
+            <p style="margin-bottom: 15px; font-size: 0.85rem; color: var(--text-muted);">مثال: 50 دلار / 1000 تومان / 0.5 بیت‌کوین</p>
             <input type="text" id="calc-input" placeholder="مبلغ و واحد را وارد کنید...">
             <button class="action-btn" onclick="doConvert()">تبدیل کن</button>
             <div id="calc-result" class="result-box"></div>
@@ -119,49 +208,94 @@
 
     <!-- صفحه مترجم -->
     <div id="trans-view" class="sub-view">
-        <button class="back-btn" onclick="goBack()">🔙 بازگشت به منو</button>
-        <div class="menu-title">🌐 مترجم هوشمند</div>
+        <button class="back-btn" onclick="goBack()">🔙 بازگشت</button>
+        <div class="section-title">🌐 مترجم هوشمند</div>
         <div class="form-box">
-            <input type="text" id="trans-input" placeholder="متن فارسی یا انگلیسی را بنویسید...">
+            <input type="text" id="trans-input" placeholder="متن فارسی یا انگلیسی...">
             <button class="action-btn" onclick="doTranslate()">ترجمه کن</button>
             <div id="trans-result" class="result-box"></div>
         </div>
     </div>
 
+    <!-- صفحه پروفایل کاربر -->
+    <div id="profile-view" class="sub-view">
+        <button class="back-btn" onclick="goBack()">🔙 بازگشت</button>
+        <div class="section-title">👤 پروفایل شما</div>
+        <div class="form-box" style="text-align: center;">
+            <div class="user-avatar" id="profile-avatar" style="width: 80px; height: 80px; font-size: 2.5rem; margin: 0 auto 20px auto;">H</div>
+            <p style="margin-bottom: 20px; color: var(--text-muted); font-size: 0.9rem;">آیدی تلگرام: <span id="profile-id" style="color:white; direction:ltr; display:inline-block;">...</span></p>
+            
+            <input type="text" id="edit-name" placeholder="نام نمایشی جدید...">
+            <button class="action-btn" onclick="saveProfile()">ذخیره تغییرات</button>
+            <p style="margin-top: 15px; font-size: 0.75rem; color: var(--text-muted);">* تغییرات فقط در این مینی‌اپ اعمال می‌شود و به اطلاعات تلگرام شما دسترسی ندارد.</p>
+        </div>
+    </div>
+
     <script>
+        // راه‌اندازی تلگرام
         const tg = window.Telegram.WebApp;
         tg.expand();
         tg.ready();
 
-        // ۱. دریافت قیمت‌ها
+        // --- مدیریت پروفایل ---
+        let userProfile = {
+            id: tg.initDataUnsafe?.user?.id || "نامشخص",
+            firstName: tg.initDataUnsafe?.user?.first_name || "کاربر",
+            displayName: localStorage.getItem('rx_display_name') || tg.initDataUnsafe?.user?.first_name || "کاربر"
+        };
+
+        function initProfile() {
+            document.getElementById('header-name').innerText = userProfile.displayName;
+            document.getElementById('header-avatar').innerText = userProfile.displayName.charAt(0).toUpperCase();
+            
+            document.getElementById('profile-avatar').innerText = userProfile.displayName.charAt(0).toUpperCase();
+            document.getElementById('profile-id').innerText = userProfile.id;
+            document.getElementById('edit-name').value = userProfile.displayName;
+        }
+        initProfile();
+
+        function saveProfile() {
+            const newName = document.getElementById('edit-name').value.trim();
+            if(newName) {
+                userProfile.displayName = newName;
+                localStorage.setItem('rx_display_name', newName);
+                initProfile();
+                tg.HapticFeedback.notificationOccurred('success');
+                alert("پروفایل با موفقیت بروزرسانی شد!");
+            }
+        }
+
+        // --- دریافت قیمت‌ها ---
         async function getPrices() {
             try {
                 const res = await fetch("https://raw.githubusercontent.com/iran-market/iran-market.github.io/main/data/popular.json");
                 const data = await res.json();
                 const p = data.data;
                 
+                const updatePrice = (id, price) => {
+                    const el = document.getElementById(id);
+                    if(el) { el.innerText = price.toLocaleString('fa-IR'); el.classList.remove("loading"); }
+                };
+
                 const usd = p.find(x => x.symbol === "USD_IRR_FREE");
                 const gold = p.find(x => x.symbol === "GOLD_18K_IRR");
                 const coin = p.find(x => x.symbol === "COIN_EMAMI_IRR");
                 
-                if(usd) { document.getElementById("usd-price").innerText = usd.price.toLocaleString('fa-IR'); document.getElementById("usd-price").classList.remove("loading-pulse"); }
-                if(gold) { document.getElementById("gold-price").innerText = gold.price.toLocaleString('fa-IR'); document.getElementById("gold-price").classList.remove("loading-pulse"); }
-                if(coin) { document.getElementById("coin-price").innerText = coin.price.toLocaleString('fa-IR'); document.getElementById("coin-price").classList.remove("loading-pulse"); }
+                if(usd) updatePrice("usd-price", usd.price);
+                if(gold) updatePrice("gold-price", gold.price);
+                if(coin) updatePrice("coin-price", coin.price);
 
                 const btcRes = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd");
                 const btcData = await btcRes.json();
-                if(btcData.bitcoin) {
-                    document.getElementById("btc-price").innerText = "$" + btcData.bitcoin.usd.toLocaleString('en-US');
-                    document.getElementById("btc-price").classList.remove("loading-pulse");
-                }
-            } catch(e) { console.error(e); }
+                if(btcData.bitcoin) updatePrice("btc-price", btcData.bitcoin.usd);
+            } catch(e) { console.error("Price error", e); }
         }
         getPrices();
 
-        // ۲. دریافت اخبار
+        // --- اخبار (با آدرس جدید ایران اینترنشنال برای ورزشی) ---
         const feeds = {
             'general': 'https://feeds.bbci.co.uk/persian/rss.xml',
-            'sport': 'https://www.varzesh3.com/rss',
+            'sport': 'https://www.iranintl.com/feed', // تغییر به ایران اینترنشنال
             'politics': 'https://www.isna.ir/rss/tp/14',
             'economy': 'https://www.isna.ir/rss/tp/34',
             'tech': 'https://www.isna.ir/rss/tp/41',
@@ -172,16 +306,33 @@
             tg.HapticFeedback.impactOccurred('medium');
             showView('news-view');
             document.getElementById('news-title').innerText = title;
-            document.getElementById('news-list').innerHTML = '<div class="spinner">⏳ در حال دریافت...</div>';
+            document.getElementById('news-list').innerHTML = '<div style="text-align:center; color:var(--primary); margin-top:20px;">⏳ در حال دریافت...</div>';
 
             try {
-                const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feeds[category])}`;
+                let finalUrl = feeds[category];
+                // فیلتر ورزشی از ایران اینترنشنال (چون فیدش همه چیز داره)
+                let isSport = category === 'sport';
+                
+                const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(finalUrl)}`;
                 const res = await fetch(url);
                 const data = await res.json();
 
                 if(data.status === 'ok' && data.items.length > 0) {
+                    let items = data.items;
+                    
+                    // اگه ورزشی بود، فقط اخبار ورزشی رو فیلتر کن
+                    if(isSport) {
+                        const keywords = ["ورزش", "فوتبال", "لیگ", "تیم", "قهرمانی", "بازی", "المپیک"];
+                        items = items.filter(item => keywords.some(kw => item.title.includes(kw) || item.description.includes(kw)));
+                    }
+
+                    if(items.length === 0) {
+                        document.getElementById('news-list').innerHTML = '<div style="text-align:center; color:var(--danger); margin-top:20px;">❌ خبری یافت نشد.</div>';
+                        return;
+                    }
+
                     let html = '';
-                    data.items.slice(0, 5).forEach(item => {
+                    items.slice(0, 5).forEach(item => {
                         let date = item.pubDate ? new Date(item.pubDate).toLocaleDateString('fa-IR') : 'نامشخص';
                         let desc = item.description.replace(/<[^>]*>?/gm, '').substring(0, 100) + '...';
                         html += `
@@ -190,20 +341,20 @@
                                 <p>${desc}</p>
                                 <div class="news-meta">
                                     <span>🕐 ${date}</span>
-                                    <span style="color: #60a5fa;" onclick="tg.openLink('${item.link}')">مشاهده ↗</span>
+                                    <span style="color: var(--primary); font-weight: 900;" onclick="tg.openLink('${item.link}')">مشاهده ↗</span>
                                 </div>
                             </div>`;
                     });
                     document.getElementById('news-list').innerHTML = html;
                 } else {
-                    document.getElementById('news-list').innerHTML = '<div class="spinner">❌ خبری یافت نشد.</div>';
+                    document.getElementById('news-list').innerHTML = '<div style="text-align:center; color:var(--danger); margin-top:20px;">❌ خبری یافت نشد (فیلترشکن را بررسی کنید).</div>';
                 }
             } catch(e) {
-                document.getElementById('news-list').innerHTML = '<div class="spinner">❌ خطای شبکه (فیلترشکن را روشن کنید)</div>';
+                document.getElementById('news-list').innerHTML = '<div style="text-align:center; color:var(--danger); margin-top:20px;">❌ خطای شبکه.</div>';
             }
         }
 
-        // ۳. ماشین حساب تبدیل ارز
+        // --- ماشین حساب ---
         async function doConvert() {
             const text = document.getElementById('calc-input').value.toLowerCase();
             const resultBox = document.getElementById('calc-result');
@@ -211,18 +362,13 @@
 
             const match = text.match(/([\d\.]+)\s*(دلار|یورو|تومان|بیت|bitcoin|btc|eth|اتریوم|پوند|dollar)/);
             if(!match) {
-                resultBox.style.display = 'block';
-                resultBox.style.background = 'rgba(239, 68, 68, 0.1)';
-                resultBox.style.borderColor = 'var(--danger)';
-                resultBox.style.color = 'var(--danger)';
-                resultBox.innerText = "❌ فرمت اشتباه است (مثلاً: 50 دلار)";
+                resultBox.style.display = 'block'; resultBox.style.background = 'rgba(239, 68, 68, 0.1)'; resultBox.style.borderColor = 'var(--danger)'; resultBox.style.color = 'var(--danger)'; resultBox.innerText = "❌ فرمت اشتباه است.";
                 return;
             }
 
-            const amount = parseFloat(match[1]);
-            const curr = match[2];
-            resultBox.innerText = "⏳ در حال محاسبه...";
-            resultBox.style.display = 'block';
+            const amount = parseFloat(match[1]); const curr = match[2];
+            resultBox.innerText = "⏳ در حال محاسبه..."; resultBox.style.display = 'block';
+            resultBox.style.background = 'rgba(16, 185, 129, 0.1)'; resultBox.style.borderColor = 'var(--success)'; resultBox.style.color = 'var(--success)';
 
             try {
                 const res = await fetch("https://raw.githubusercontent.com/iran-market/iran-market.github.io/main/data/popular.json");
@@ -230,69 +376,50 @@
                 const rates = data.data;
                 const usd = rates.find(x => x.symbol === "USD_IRR_FREE")?.price || 0;
                 const eur = rates.find(x => x.symbol === "EUR_IRR_FREE")?.price || 0;
-                const gbp = rates.find(x => x.symbol === "GBP_IRR_FREE")?.price || 0;
 
                 let finalMsg = "";
                 if(curr.includes("دلار") || curr.includes("dollar")) finalMsg = `${amount} دلار = ${(amount * usd).toLocaleString('fa-IR')} تومان`;
                 else if(curr.includes("یورو")) finalMsg = `${amount} یورو = ${(amount * eur).toLocaleString('fa-IR')} تومان`;
-                else if(curr.includes("پوند")) finalMsg = `${amount} پوند = ${(amount * gbp).toLocaleString('fa-IR')} تومان`;
                 else if(curr.includes("تومان")) finalMsg = `${amount.toLocaleString('fa-IR')} تومان = ${(amount / usd).toFixed(2)} دلار`;
                 else if(curr.includes("بیت") || curr.includes("btc") || curr.includes("bitcoin")) {
                     const btcRes = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd");
                     const btcData = await btcRes.json();
-                    const btcUsd = btcData.bitcoin.usd;
-                    finalMsg = `${amount} بیت‌کوین = ${(amount * btcUsd).toLocaleString('en-US')} دلار = ${(amount * btcUsd * usd).toLocaleString('fa-IR')} تومان`;
+                    finalMsg = `${amount} بیت‌کوین = ${(amount * btcData.bitcoin.usd * usd).toLocaleString('fa-IR')} تومان`;
                 }
-                else if(curr.includes("اتریوم") || curr.includes("eth")) {
-                    const ethRes = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd");
-                    const ethData = await ethRes.json();
-                    const ethUsd = ethData.ethereum.usd;
-                    finalMsg = `${amount} اتریوم = ${(amount * ethUsd).toLocaleString('en-US')} دلار = ${(amount * ethUsd * usd).toLocaleString('fa-IR')} تومان`;
-                }
-
-                resultBox.style.background = 'rgba(52, 211, 153, 0.1)';
-                resultBox.style.borderColor = '#34d399';
-                resultBox.style.color = '#34d399';
                 resultBox.innerText = finalMsg;
-            } catch(e) {
-                resultBox.innerText = "❌ خطا در دریافت قیمت‌ها";
-            }
+            } catch(e) { resultBox.innerText = "❌ خطا در دریافت قیمت."; }
         }
 
-        // ۴. مترجم
+        // --- مترجم ---
         async function doTranslate() {
             const text = document.getElementById('trans-input').value;
             const resultBox = document.getElementById('trans-result');
             if(!text) return;
             
-            resultBox.style.display = 'block';
-            resultBox.innerText = "⏳ در حال ترجمه...";
-            
+            resultBox.style.display = 'block'; resultBox.innerText = "⏳ در حال ترجمه...";
             const isFa = /[\u0600-\u06FF]/.test(text);
-            const src = isFa ? "fa" : "en";
-            const tgt = isFa ? "en" : "fa";
-
+            
             try {
-                const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${src}|${tgt}`);
+                const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${isFa ? 'fa|en' : 'en|fa'}`);
                 const data = await res.json();
                 resultBox.innerText = data.responseData.translatedText;
-            } catch(e) {
-                resultBox.innerText = "❌ خطا در ترجمه. فیلترشکن را بررسی کنید.";
-            }
+            } catch(e) { resultBox.innerText = "❌ خطا در ترجمه."; }
         }
 
-        // مدیریت صفحات
+        // --- مدیریت صفحات ---
         function showView(viewId) {
             tg.HapticFeedback.impactOccurred('light');
             document.getElementById('main-view').style.display = 'none';
             document.querySelectorAll('.sub-view').forEach(el => el.style.display = 'none');
             document.getElementById(viewId).style.display = 'block';
+            window.scrollTo(0, 0);
         }
 
         function goBack() {
             tg.HapticFeedback.impactOccurred('light');
             document.querySelectorAll('.sub-view').forEach(el => el.style.display = 'none');
             document.getElementById('main-view').style.display = 'block';
+            window.scrollTo(0, 0);
         }
     </script>
 </body>

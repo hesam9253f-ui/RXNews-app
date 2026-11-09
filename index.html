@@ -9,11 +9,11 @@
     <style>
         :root {
             --bg: #050508;
-            --surface: rgba(20, 20, 28, 0.6);
-            --surface-hover: rgba(35, 35, 45, 0.8);
+            --surface: rgba(20, 20, 28, 0.7);
+            --surface-hover: rgba(35, 35, 45, 0.9);
             --border: rgba(255, 255, 255, 0.08);
             --primary: #3b82f6;
-            --primary-glow: rgba(59, 130, 246, 0.4);
+            --primary-glow: rgba(59, 130, 246, 0.5);
             --secondary: #8b5cf6;
             --success: #10b981;
             --danger: #ef4444;
@@ -36,12 +36,12 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* --- هدر (Header) --- */
+        /* --- هدر --- */
         .header {
             padding: 15px 20px;
             display: flex; justify-content: space-between; align-items: center;
             position: sticky; top: 0; z-index: 100;
-            background: rgba(5, 5, 8, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            background: rgba(5, 5, 8, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
         }
         .brand h1 { font-size: 1.4rem; font-weight: 900; background: linear-gradient(90deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -52,18 +52,19 @@
         .avatar { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
         .avatar-fallback { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--primary); display: flex; justify-content: center; align-items: center; font-weight: 900; background: linear-gradient(135deg, #1e1b4b, #3b82f6); }
 
-        /* --- تیکر خبری --- */
+        /* --- تیکر خبری (اسلایدی) --- */
         .ticker-wrap {
-            width: 100%; overflow: hidden; background: rgba(59, 130, 246, 0.05);
-            border-bottom: 1px solid var(--border); padding: 8px 0;
-            display: flex; align-items: center; position: sticky; top: 69px; z-index: 99;
-            backdrop-filter: blur(10px);
+            width: 100%; height: 35px; background: rgba(59, 130, 246, 0.1);
+            border-bottom: 1px solid var(--border); display: flex; align-items: center;
+            position: sticky; top: 69px; z-index: 99; backdrop-filter: blur(10px); overflow: hidden;
         }
-        .ticker-label { background: var(--danger); color: white; padding: 3px 10px; font-size: 0.7rem; font-weight: 900; border-radius: 4px; margin: 0 15px; z-index: 2; box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
-        .ticker { white-space: nowrap; padding-left: 100%; animation: ticker 30s linear infinite; font-size: 0.8rem; font-weight: 700; }
-        .ticker span { margin-right: 30px; color: #cbd5e1; }
-        .ticker span::before { content: '•'; color: var(--primary); margin-left: 10px; }
-        @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+        .ticker-label { background: var(--danger); color: white; padding: 2px 10px; font-size: 0.7rem; font-weight: 900; border-radius: 4px; margin: 0 10px; z-index: 2; box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
+        .ticker-text {
+            font-size: 0.85rem; font-weight: 700; color: #e2e8f0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .ticker-text.fade { opacity: 0; transform: translateY(-10px); }
 
         /* --- بخش‌ها --- */
         .section { padding: 20px; display: none; animation: fadeIn 0.4s ease; }
@@ -71,7 +72,7 @@
         .section-title { font-size: 1.1rem; font-weight: 900; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
         .section-title span { color: var(--primary); font-size: 0.8rem; font-weight: 400; cursor: pointer; }
 
-        /* --- بازار (Markets) --- */
+        /* --- بازار --- */
         .market-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .market-card {
             background: var(--surface); backdrop-filter: blur(16px);
@@ -84,9 +85,8 @@
         .market-card .change { font-size: 0.75rem; font-weight: 700; margin-top: 5px; direction: ltr; text-align: right; }
         .market-card .change.up { color: var(--success); }
         .market-card .change.down { color: var(--danger); }
-        .market-card.loading .price { color: var(--muted); font-size: 1rem; animation: pulse 1.5s infinite; }
 
-        /* --- اخبار (News) --- */
+        /* --- اخبار --- */
         .news-filters { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; scrollbar-width: none; }
         .news-filters::-webkit-scrollbar { display: none; }
         .filter-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; white-space: nowrap; cursor: pointer; transition: 0.2s; }
@@ -103,13 +103,14 @@
         .news-title { font-size: 1rem; font-weight: 900; line-height: 1.5; margin-bottom: 10px; }
         .news-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
-        /* --- ابزارها و پروفایل --- */
+        /* --- ابزارها --- */
         .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .tool-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; }
         .tool-card:active { background: var(--primary); transform: translateY(2px); box-shadow: 0 0 20px var(--primary-glow); }
         .tool-card i { font-size: 2rem; margin-bottom: 10px; display: block; font-style: normal; }
         .tool-card span { font-size: 0.9rem; font-weight: 700; }
 
+        /* --- پروفایل --- */
         .profile-header { text-align: center; padding: 20px 0; }
         .profile-avatar { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--primary); box-shadow: 0 0 30px var(--primary-glow); object-fit: cover; margin: 0 auto 15px auto; }
         .profile-avatar-fallback { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--primary); box-shadow: 0 0 30px var(--primary-glow); display: flex; justify-content: center; align-items: center; font-size: 2.5rem; font-weight: 900; background: linear-gradient(135deg, #1e1b4b, #3b82f6); margin: 0 auto 15px auto; }
@@ -122,24 +123,16 @@
         .menu-item span { font-size: 0.9rem; font-weight: 700; }
         .menu-item .arrow { color: var(--muted); }
 
-        /* --- نوار پایین لوکس (Floating Bottom Nav) --- */
-        .bottom-nav-container {
-            position: fixed; bottom: 20px; left: 20px; right: 20px;
-            display: flex; justify-content: center; z-index: 1000;
-        }
+        /* --- نوار پایین لوکس --- */
+        .bottom-nav-container { position: fixed; bottom: 20px; left: 20px; right: 20px; display: flex; justify-content: center; z-index: 1000; }
         .bottom-nav {
             background: rgba(15, 15, 20, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px;
             display: flex; justify-content: space-around; align-items: center;
             width: 100%; max-width: 400px; height: 65px; padding: 0 10px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.1);
-            position: relative;
         }
-        .nav-item { 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: var(--muted); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            cursor: pointer; width: 60px; height: 60px; border-radius: 20px; position: relative; z-index: 2;
-        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--muted); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; width: 60px; height: 60px; border-radius: 20px; position: relative; }
         .nav-item.active { color: var(--primary); transform: translateY(-5px); }
         .nav-item .icon { font-size: 1.4rem; margin-bottom: 2px; transition: 0.3s; filter: grayscale(1); opacity: 0.7; }
         .nav-item.active .icon { filter: grayscale(0); opacity: 1; filter: drop-shadow(0 0 10px var(--primary)); }
@@ -149,34 +142,47 @@
         /* --- مودال (Modal) --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px);
-            display: none; justify-content: center; align-items: center; z-index: 2000;
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px);
+            display: none; justify-content: center; align-items: flex-end; z-index: 2000;
             opacity: 0; transition: opacity 0.3s ease;
         }
         .modal-overlay.active { display: flex; opacity: 1; }
         .modal-content {
-            background: var(--bg); border: 1px solid var(--border); border-radius: 20px;
-            padding: 25px; width: 90%; max-width: 400px; text-align: center;
-            transform: scale(0.9); transition: transform 0.3s ease;
+            background: var(--bg); border-top-left-radius: 24px; border-top-right-radius: 24px;
+            border-top: 1px solid var(--border); padding: 25px; width: 100%; max-width: 500px;
+            transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            max-height: 85vh; overflow-y: auto;
         }
-        .modal-overlay.active .modal-content { transform: scale(1); }
-        .modal-title { font-size: 1.2rem; font-weight: 900; margin-bottom: 15px; }
-        .modal-text { font-size: 0.9rem; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
-        .modal-btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 12px; width: 100%; font-weight: 700; font-family: inherit; font-size: 1rem; cursor: pointer; }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-title { font-size: 1.2rem; font-weight: 900; }
+        .modal-close { background: var(--surface); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
 
-        /* --- لودینگ --- */
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        /* --- ماشین حساب و مترجم --- */
+        .calc-screen { background: rgba(0,0,0,0.5); padding: 20px; text-align: left; font-size: 2rem; font-weight: 900; color: var(--success); direction: ltr; border-radius: 12px; margin-bottom: 15px; min-height: 80px; word-wrap: break-word; }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .calc-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; font-size: 1.2rem; font-weight: 900; color: white; cursor: pointer; transition: 0.1s; }
+        .calc-btn:active { background: var(--primary); transform: scale(0.9); }
+        .calc-btn.op { color: var(--secondary); }
+        .calc-btn.equal { background: var(--primary); grid-column: span 2; }
+        
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; }
+        .form-control { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 15px; border-radius: 12px; color: white; font-family: inherit; font-size: 1rem; outline: none; }
+        .form-control:focus { border-color: var(--primary); }
+        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--primary); color: white; font-weight: 900; font-size: 1rem; font-family: inherit; cursor: pointer; margin-top: 10px; }
+        .result-box { margin-top: 20px; padding: 20px; border-radius: 12px; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); color: var(--success); text-align: center; font-weight: 700; font-size: 1.1rem; display: none; }
+
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .spinner { text-align: center; color: var(--primary); padding: 20px; font-size: 0.9rem; font-weight: 700; }
     </style>
 </head>
 <body>
 
-    <!-- هدر -->
     <div class="header">
         <div class="brand"><h1>RXNews</h1></div>
         <div class="header-actions">
-            <div class="icon-btn" onclick="tg.showAlert('جستجوی هوشمند (RX Command) به‌زودی...')">🔍</div>
+            <div class="icon-btn" onclick="tg.showAlert('جستجوی هوشمند در فاز بعدی...')">🔍</div>
             <div class="icon-btn" onclick="switchTab('profile', document.querySelectorAll('.nav-item')[3])">
                 <img id="header-avatar" class="avatar" src="" style="display:none;">
                 <div id="header-avatar-fallback" class="avatar-fallback">R</div>
@@ -184,27 +190,23 @@
         </div>
     </div>
 
-    <!-- تیکر خبری -->
     <div class="ticker-wrap">
         <div class="ticker-label">LIVE</div>
-        <div class="ticker" id="ticker-content"><span>در حال دریافت...</span></div>
+        <div class="ticker-text" id="ticker-content">در حال دریافت اخبار...</div>
     </div>
 
-    <!-- بخش خانه -->
     <div id="home" class="section active">
-        <div class="section-title">بازار مالی <span onclick="switchTab('tools', null)">رهگیری</span></div>
+        <div class="section-title">بازار مالی <span>لحظه‌ای</span></div>
         <div class="market-grid" id="market-data">
             <div class="market-card loading"><div class="title">دلار <span>USD</span></div><div class="price">...</div></div>
             <div class="market-card loading"><div class="title">طلا <span>GOLD</span></div><div class="price">...</div></div>
             <div class="market-card loading"><div class="title">سکه <span>COIN</span></div><div class="price">...</div></div>
             <div class="market-card loading"><div class="title">بیت‌کوین <span>BTC</span></div><div class="price">...</div></div>
         </div>
-        
         <div class="section-title" style="margin-top: 30px;">مهم‌ترین اخبار</div>
         <div id="home-news"></div>
     </div>
 
-    <!-- بخش اخبار -->
     <div id="news" class="section">
         <div class="news-filters" id="news-filters">
             <button class="filter-btn active" data-cat="general">عمومی</button>
@@ -216,34 +218,30 @@
         <div id="news-list" class="news-list"></div>
     </div>
 
-    <!-- بخش ابزارها -->
     <div id="tools" class="section">
         <div class="section-title">جعبه‌ابزار هوشمند</div>
         <div class="tools-grid">
-            <div class="tool-card" onclick="openTool('live')"><i>📺</i><span>پخش زنده</span></div>
-            <div class="tool-card" onclick="openTool('calc')"><i>🧮</i><span>ماشین‌حساب</span></div>
-            <div class="tool-card" onclick="openTool('trans')"><i>🌐</i><span>مترجم</span></div>
-            <div class="tool-card" onclick="openTool('currency')"><i>💱</i><span>تبدیل ارز</span></div>
+            <div class="tool-card" onclick="openModal('calc')"><i>🧮</i><span>ماشین‌حساب</span></div>
+            <div class="tool-card" onclick="openModal('trans')"><i>🌐</i><span>مترجم</span></div>
+            <div class="tool-card" onclick="openModal('currency')"><i>💱</i><span>تبدیل ارز</span></div>
+            <div class="tool-card" onclick="tg.openLink('https://www.iribnews.ir/fa/live/t/irinn')"><i>📺</i><span>پخش زنده</span></div>
         </div>
     </div>
 
-    <!-- بخش پروفایل -->
     <div id="profile" class="section">
         <div class="profile-header">
             <img id="profile-avatar" class="profile-avatar" src="" style="display:none;">
             <div id="profile-avatar-fallback" class="profile-avatar-fallback">R</div>
             <div class="profile-name" id="profile-name">کاربر</div>
         </div>
-        
         <div class="menu-list">
-            <div class="menu-item" onclick="openModal('ذخیره‌شده‌ها', 'هیچ خبری ذخیره نکرده‌اید.')"><span>ذخیره‌شده‌ها</span><span class="arrow">←</span></div>
-            <div class="menu-item" onclick="openModal('تاریخچه', 'تاریخچه مطالعه شما خالی است.')"><span>تاریخچه مطالعه</span><span class="arrow">←</span></div>
-            <div class="menu-item" onclick="openModal('اعلان‌ها', 'اعلان‌ها در نسخه بعدی فعال می‌شود.')"><span>اعلان‌ها</span><span class="arrow">←</span></div>
-            <div class="menu-item" onclick="openModal('درباره RXNews', 'پروژه Omniverse - ساخته شده توسط حسام فیضی')"><span>درباره</span><span class="arrow">←</span></div>
+            <div class="menu-item" onclick="openModal('saved')"><span>ذخیره‌شده‌ها</span><span class="arrow">←</span></div>
+            <div class="menu-item" onclick="openModal('history')"><span>تاریخچه مطالعه</span><span class="arrow">←</span></div>
+            <div class="menu-item" onclick="openModal('settings')"><span>تنظیمات</span><span class="arrow">←</span></div>
+            <div class="menu-item" onclick="openModal('about')"><span>درباره RXNews</span><span class="arrow">←</span></div>
         </div>
     </div>
 
-    <!-- نوار پایین لوکس -->
     <div class="bottom-nav-container">
         <div class="bottom-nav">
             <div class="nav-item active" onclick="switchTab('home', this)"><span class="icon">🏠</span><span class="label">خانه</span></div>
@@ -253,23 +251,22 @@
         </div>
     </div>
 
-    <!-- مودال -->
+    <!-- مودال (Modal) -->
     <div class="modal-overlay" id="modal" onclick="closeModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <div class="modal-title" id="modal-title">عنوان</div>
-            <div class="modal-text" id="modal-text">متن</div>
-            <button class="modal-btn" onclick="closeModal()">متوجه شدم</button>
+            <div class="modal-header">
+                <div class="modal-title" id="modal-title">عنوان</div>
+                <button class="modal-close" onclick="closeModal()">✖</button>
+            </div>
+            <div id="modal-body"></div>
         </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.ready();
-        tg.setHeaderColor('#050508');
+        tg.expand(); tg.ready(); tg.setHeaderColor('#050508');
 
         const user = tg.initDataUnsafe?.user || { id: "نامشخص", first_name: "کاربر", photo_url: null };
-        
         document.getElementById('profile-name').innerText = user.first_name;
         const char = user.first_name ? user.first_name.charAt(0) : "R";
         
@@ -280,24 +277,11 @@
             document.querySelectorAll('.avatar-fallback, .profile-avatar-fallback').forEach(el => el.innerText = char);
         }
 
-        // --- مودال (Modal) ---
-        function openModal(title, text) {
-            tg.HapticFeedback.impactOccurred('light');
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-text').innerText = text;
-            document.getElementById('modal').classList.add('active');
-        }
-        function closeModal(e) {
-            if(e && e.target !== e.currentTarget) return;
-            document.getElementById('modal').classList.remove('active');
-        }
-
         // --- مدیریت تب‌ها ---
         function switchTab(tabId, element) {
             tg.HapticFeedback.impactOccurred('light');
             document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            
             if(element) {
                 document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
                 element.classList.add('active');
@@ -305,29 +289,147 @@
             window.scrollTo(0, 0);
         }
 
-        // --- دریافت قیمت‌ها ---
+        // --- مدیریت مودال‌ها (ابزارها و پروفایل) ---
+        function openModal(type) {
+            tg.HapticFeedback.impactOccurred('light');
+            const body = document.getElementById('modal-body');
+            const title = document.getElementById('modal-title');
+            
+            if(type === 'calc') {
+                title.innerText = "ماشین‌حساب";
+                body.innerHTML = `
+                    <div class="calc-screen" id="calc-screen">0</div>
+                    <div class="calc-grid">
+                        <button class="calc-btn op" onclick="calcInput('C')">C</button>
+                        <button class="calc-btn op" onclick="calcInput('/')">÷</button>
+                        <button class="calc-btn op" onclick="calcInput('*')">×</button>
+                        <button class="calc-btn op" onclick="calcInput('-')">-</button>
+                        <button class="calc-btn" onclick="calcInput('7')">7</button>
+                        <button class="calc-btn" onclick="calcInput('8')">8</button>
+                        <button class="calc-btn" onclick="calcInput('9')">9</button>
+                        <button class="calc-btn op" onclick="calcInput('+')">+</button>
+                        <button class="calc-btn" onclick="calcInput('4')">4</button>
+                        <button class="calc-btn" onclick="calcInput('5')">5</button>
+                        <button class="calc-btn" onclick="calcInput('6')">6</button>
+                        <button class="calc-btn equal" style="grid-row: span 2;" onclick="calcInput('=')">=</button>
+                        <button class="calc-btn" onclick="calcInput('1')">1</button>
+                        <button class="calc-btn" onclick="calcInput('2')">2</button>
+                        <button class="calc-btn" onclick="calcInput('3')">3</button>
+                        <button class="calc-btn" style="grid-column: span 3;" onclick="calcInput('0')">0</button>
+                    </div>
+                `;
+            } else if(type === 'trans') {
+                title.innerText = "مترجم هوشمند";
+                body.innerHTML = `
+                    <div class="input-group">
+                        <label>متن خود را وارد کنید (فارسی یا انگلیسی):</label>
+                        <input type="text" id="trans-input" class="form-control" placeholder="...">
+                    </div>
+                    <button class="btn" onclick="doTranslate()">ترجمه کن</button>
+                    <div id="trans-result" class="result-box"></div>
+                `;
+            } else if(type === 'currency') {
+                title.innerText = "تبدیل ارز و طلا";
+                body.innerHTML = `
+                    <div class="input-group">
+                        <label>مثلاً بنویسید: 50 دلار / 0.5 بیت کوین</label>
+                        <input type="text" id="curr-input" class="form-control" placeholder="...">
+                    </div>
+                    <button class="btn" onclick="doConvert()">تبدیل کن</button>
+                    <div id="curr-result" class="result-box"></div>
+                `;
+            } else if(type === 'saved') {
+                title.innerText = "ذخیره‌شده‌ها";
+                body.innerHTML = `<div style="text-align:center; color:var(--muted); padding:20px;">هنوز خبری ذخیره نکرده‌اید.</div>`;
+            } else if(type === 'history') {
+                title.innerText = "تاریخچه";
+                body.innerHTML = `<div style="text-align:center; color:var(--muted); padding:20px;">تاریخچه شما خالی است.</div>`;
+            } else if(type === 'settings') {
+                title.innerText = "تنظیمات";
+                body.innerHTML = `
+                    <div class="input-group"><label>حالت تاریک</label><input type="checkbox" checked disabled></div>
+                    <div class="input-group"><label>اعلان خبر فوری</label><input type="checkbox" checked disabled></div>
+                    <p style="font-size:0.8rem; color:var(--muted);">تنظیمات پیشرفته در فاز بعدی پروژه Omniverse فعال می‌شود.</p>
+                `;
+            } else if(type === 'about') {
+                title.innerText = "درباره RXNews";
+                body.innerHTML = `<div style="text-align:center; line-height:2;">پروژه Omniverse<br>نسخه ۹.۰<br><br>طراحی و توسعه: <b>حسام فیضی</b><br>ساخته شده برای آینده خبر.</div>`;
+            }
+
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal(e) {
+            if(e && e.target !== e.currentTarget) return;
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // --- توابع ماشین حساب ---
+        let calcStr = "0";
+        function calcInput(val) {
+            tg.HapticFeedback.impactOccurred('light');
+            if(val === 'C') calcStr = "0";
+            else if(val === '=') { try { calcStr = eval(calcStr).toString(); } catch { calcStr = "Error"; } }
+            else { calcStr = (calcStr === "0" || calcStr === "Error") ? val : calcStr + val; }
+            const screen = document.getElementById('calc-screen');
+            if(screen) screen.innerText = calcStr;
+        }
+
+        // --- توابع مترجم ---
+        async function doTranslate() {
+            const text = document.getElementById('trans-input').value;
+            const resBox = document.getElementById('trans-result');
+            if(!text) return;
+            resBox.style.display = 'block'; resBox.innerText = "⏳ در حال ترجمه...";
+            const isFa = /[\u0600-\u06FF]/.test(text);
+            try {
+                const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${isFa ? 'fa|en' : 'en|fa'}`);
+                const data = await res.json();
+                resBox.innerText = data.responseData.translatedText;
+            } catch(e) { resBox.innerText = "❌ خطا در ترجمه."; }
+        }
+
+        // --- توابع تبدیل ارز ---
+        async function doConvert() {
+            const text = document.getElementById('curr-input').value.toLowerCase();
+            const resBox = document.getElementById('curr-result');
+            resBox.style.display = 'block'; resBox.innerText = "⏳ در حال محاسبه...";
+            const match = text.match(/([\d\.]+)\s*(دلار|یورو|تومان|بیت|bitcoin|btc)/);
+            if(!match) { resBox.innerText = "❌ فرمت نامعتبر."; return; }
+            try {
+                const res = await fetch("https://raw.githubusercontent.com/iran-market/iran-market.github.io/main/data/popular.json");
+                const data = await res.json();
+                const rates = data.data;
+                const usd = rates.find(x => x.symbol === "USD_IRR_FREE")?.price || 0;
+                let final = "";
+                if(match[2].includes("دلار")) final = `${match[1]} دلار = ${(match[1]*usd).toLocaleString('fa-IR')} تومان`;
+                else if(match[2].includes("تومان")) final = `${Number(match[1]).toLocaleString('fa-IR')} تومان = ${(match[1]/usd).toFixed(2)} دلار`;
+                else if(match[2].includes("بیت") || match[2].includes("btc")) {
+                    const btc = await (await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd")).json();
+                    final = `${match[1]} بیت‌کوین = ${(match[1]*btc.bitcoin.usd*usd).toLocaleString('fa-IR')} تومان`;
+                }
+                resBox.innerText = final || "❌ ارز نامعتبر.";
+            } catch(e) { resBox.innerText = "❌ خطا در شبکه."; }
+        }
+
+        // --- قیمت‌ها ---
         async function loadMarkets() {
             try {
                 const res = await fetch("https://raw.githubusercontent.com/iran-market/iran-market.github.io/main/data/popular.json");
                 const data = await res.json();
                 const p = data.data;
-                
-                const updateCard = (symbol, name, unit) => {
-                    const item = p.find(x => x.symbol === symbol);
-                    if (!item) return null;
-                    return { price: item.price, change: item.change, name, unit };
+                const getItem = (sym, name, unit) => {
+                    const i = p.find(x => x.symbol === sym);
+                    return i ? { price: i.price, change: i.change, name, unit } : null;
                 };
-
                 const cards = [
-                    updateCard("USD_IRR_FREE", "دلار", "تومان"),
-                    updateCard("GOLD_18K_IRR", "طلا", "تومان"),
-                    updateCard("COIN_EMAMI_IRR", "سکه", "تومان")
+                    getItem("USD_IRR_FREE", "دلار", "تومان"),
+                    getItem("GOLD_18K_IRR", "طلا", "تومان"),
+                    getItem("COIN_EMAMI_IRR", "سکه", "تومان")
                 ];
-
                 try {
-                    const btcRes = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true");
-                    const btcData = await btcRes.json();
-                    if (btcData.bitcoin) cards.push({ name: "بیت‌کوین", price: btcData.bitcoin.usd, change: btcData.bitcoin.usd_24h_change, unit: "دلار" });
+                    const btc = await (await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true")).json();
+                    if (btc.bitcoin) cards.push({ name: "بیت‌کوین", price: btc.bitcoin.usd, change: btc.bitcoin.usd_24h_change, unit: "دلار" });
                 } catch(e) {}
 
                 let html = '';
@@ -342,7 +444,7 @@
                     if (c.unit === "دلار") displayPrice = "$" + c.price.toLocaleString('en-US');
 
                     html += `
-                        <div class="market-card" onclick="tg.showAlert('نمودار ${c.name} به‌زودی...')">
+                        <div class="market-card">
                             <div class="title">${c.name} <span>${c.unit}</span></div>
                             <div class="price">${displayPrice}</div>
                             ${changeHtml}
@@ -350,12 +452,10 @@
                     `;
                 });
                 document.getElementById('market-data').innerHTML = html;
-            } catch(e) {
-                document.getElementById('market-data').innerHTML = '<div style="grid-column: span 2; text-align: center; color: var(--danger);">❌ خطا در دریافت قیمت‌ها</div>';
-            }
+            } catch(e) {}
         }
 
-        // --- دریافت اخبار ---
+        // --- اخبار ---
         const feeds = {
             'general': 'https://feeds.bbci.co.uk/persian/rss.xml',
             'politics': 'https://feeds.bbci.co.uk/persian/rss.xml',
@@ -367,59 +467,64 @@
         async function loadNews(category) {
             const container = document.getElementById('news-list');
             container.innerHTML = '<div class="spinner">⏳ در حال دریافت اخبار...</div>';
-
             try {
                 const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feeds[category])}`;
-                const res = await fetch(url);
-                const data = await res.json();
-
+                const data = await (await fetch(url)).json();
                 if (data.status === 'ok' && data.items.length > 0) {
                     let items = data.items;
-                    
                     if (['economy', 'sport', 'tech'].includes(category)) {
-                        const keywords = {
-                            'sport': ["ورزش", "فوتبال", "لیگ", "تیم", "المپیک", "بازی"],
-                            'economy': ["اقتصاد", "دلار", "تورم", "بازار", "بانک", "طلا"],
-                            'tech': ["فناوری", "تکنولوژی", "اینترنت", "موبایل", "کامپیوتر", "هوش مصنوعی"]
+                        const kws = {
+                            'sport': ["ورزش", "فوتبال", "لیگ", "تیم"],
+                            'economy': ["اقتصاد", "دلار", "تورم", "بازار"],
+                            'tech': ["فناوری", "اینترنت", "موبایل", "هوش مصنوعی"]
                         };
-                        items = items.filter(item => keywords[category].some(kw => item.title.includes(kw) || item.description.includes(kw)));
+                        items = items.filter(i => kws[category].some(k => i.title.includes(k) || i.description.includes(k)));
                     }
-
-                    if (items.length === 0) {
-                        container.innerHTML = '<div class="spinner">❌ خبری در این دسته یافت نشد.</div>';
-                        return;
-                    }
+                    if (items.length === 0) { container.innerHTML = '<div class="spinner">❌ خبری یافت نشد.</div>'; return; }
 
                     let html = '';
                     items.slice(0, 6).forEach(item => {
-                        let imgUrl = item.thumbnail || (item.enclosure && item.enclosure.link) || 'https://via.placeholder.com/400x200/1e1b4b/ffffff?text=RXNews';
+                        let img = item.thumbnail || 'https://via.placeholder.com/400x200/1e1b4b/ffffff?text=RXNews';
                         let date = item.pubDate ? new Date(item.pubDate).toLocaleDateString('fa-IR') : '';
                         let desc = item.description.replace(/<[^>]*>?/gm, '');
-
                         html += `
                             <div class="news-card" onclick="tg.openLink('${item.link}')">
-                                <img src="${imgUrl}" class="news-img" onerror="this.src='https://via.placeholder.com/400x200/1e1b4b/ffffff?text=RXNews'">
+                                <img src="${img}" class="news-img" onerror="this.src='https://via.placeholder.com/400x200/1e1b4b/ffffff?text=RXNews'">
                                 <div class="news-content">
                                     <div class="news-meta"><span>${category.toUpperCase()}</span><span>${date}</span></div>
                                     <div class="news-title">${item.title}</div>
                                     <div class="news-desc">${desc}</div>
                                 </div>
-                            </div>
-                        `;
+                            </div>`;
                     });
                     container.innerHTML = html;
-
-                    if (category === 'general') {
-                        let tickerHtml = '';
-                        items.slice(0, 3).forEach(i => tickerHtml += `<span>${i.title}</span>`);
-                        document.getElementById('ticker-content').innerHTML = tickerHtml;
-                    }
+                    
+                    // شروع تیکر برای اخبار عمومی
+                    if (category === 'general') startTicker(items);
                 } else {
-                    container.innerHTML = '<div class="spinner">❌ خطا در دریافت (فیلترشکن را بررسی کنید).</div>';
+                    container.innerHTML = '<div class="spinner">❌ خطا در دریافت.</div>';
                 }
-            } catch(e) {
-                container.innerHTML = '<div class="spinner">❌ خطای شبکه.</div>';
-            }
+            } catch(e) { container.innerHTML = '<div class="spinner">❌ خطای شبکه.</div>'; }
+        }
+
+        // --- تیکر ۸ ثانیه‌ای ---
+        let tickerItems = [];
+        let tickerIndex = 0;
+        function startTicker(items) {
+            tickerItems = items.map(i => i.title);
+            tickerIndex = 0;
+            showNextTicker();
+        }
+        function showNextTicker() {
+            if(tickerItems.length === 0) return;
+            const el = document.getElementById('ticker-content');
+            el.classList.add('fade');
+            setTimeout(() => {
+                el.innerText = tickerItems[tickerIndex];
+                el.classList.remove('fade');
+                tickerIndex = (tickerIndex + 1) % tickerItems.length;
+                setTimeout(showNextTicker, 8000); // ۸ ثانیه تاخیر
+            }, 500); // زمان انیمیشن محو شدن
         }
 
         document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -431,41 +536,21 @@
             });
         });
 
-        // --- ابزارها ---
-        function openTool(toolName) {
-            tg.HapticFeedback.impactOccurred('light');
-            if(toolName === 'live') {
-                tg.openLink("https://www.iribnews.ir/fa/live/t/irinn");
-            } else if(toolName === 'calc') {
-                let num = prompt("ماشین حساب (مثلاً 5+5):");
-                if(num) {
-                    try { tg.showAlert(`نتیجه: ${eval(num)}`); } catch { tg.showAlert("نامعتبر"); }
-                }
-            } else {
-                openModal("به‌زودی", "این ابزار در نسخه‌های بعدی پروژه Omniverse فعال می‌شود.");
-            }
-        }
-
-        // --- اجرای اولیه ---
         loadMarkets();
         loadNews('general');
         
         async function loadHomeNews() {
             try {
-                const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feeds.general)}`);
-                const data = await res.json();
+                const data = await (await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feeds.general)}`)).json();
                 if (data.status === 'ok') {
                     let html = '';
                     data.items.slice(0, 3).forEach(item => {
-                        let imgUrl = item.thumbnail || 'https://via.placeholder.com/400x200/1e1b4b/ffffff?text=RXNews';
+                        let img = item.thumbnail || 'https://via.placeholder.com/400x200/1e1b4b/ffffff?text=RXNews';
                         html += `
                             <div class="news-card" onclick="tg.openLink('${item.link}')">
-                                <img src="${imgUrl}" class="news-img">
-                                <div class="news-content">
-                                    <div class="news-title">${item.title}</div>
-                                </div>
-                            </div>
-                        `;
+                                <img src="${img}" class="news-img">
+                                <div class="news-content"><div class="news-title">${item.title}</div></div>
+                            </div>`;
                     });
                     document.getElementById('home-news').innerHTML = html;
                 }
@@ -473,6 +558,7 @@
         }
         loadHomeNews();
         setInterval(loadMarkets, 60000);
+
     </script>
 </body>
 </html>

@@ -9,17 +9,26 @@
     <style>
         :root {
             --bg: #050508;
-            --surface: rgba(20, 20, 28, 0.7);
+            --surface: rgba(20, 20, 28, 0.75);
             --surface-hover: rgba(35, 35, 45, 0.9);
             --border: rgba(255, 255, 255, 0.08);
             --primary: #3b82f6;
-            --primary-glow: rgba(59, 130, 246, 0.5);
+            --primary-glow: rgba(59, 130, 246, 0.6);
             --secondary: #8b5cf6;
             --success: #10b981;
             --danger: #ef4444;
             --text: #f8fafc;
             --muted: #94a3b8;
             --nav-height: 80px;
+        }
+
+        /* تم روشن */
+        body.light-theme {
+            --bg: #f1f5f9;
+            --surface: rgba(255, 255, 255, 0.8);
+            --border: rgba(0, 0, 0, 0.1);
+            --text: #0f172a;
+            --muted: #475569;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; font-family: 'Vazirmatn', sans-serif; }
@@ -34,6 +43,7 @@
             padding-bottom: calc(var(--nav-height) + 20px);
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+            transition: background 0.3s, color 0.3s;
         }
 
         /* --- هدر --- */
@@ -44,15 +54,17 @@
             background: rgba(5, 5, 8, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
         }
-        .brand h1 { font-size: 1.4rem; font-weight: 900; background: linear-gradient(90deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        body.light-theme .header { background: rgba(241, 245, 249, 0.85); }
+        
+        .brand h1 { font-size: 1.5rem; font-weight: 900; background: linear-gradient(90deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; }
         .header-actions { display: flex; gap: 10px; align-items: center; }
         .icon-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); width: 38px; height: 38px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; transition: 0.2s; }
-        .icon-btn:active { transform: scale(0.9); background: var(--primary); }
+        .icon-btn:active { transform: scale(0.9); background: var(--primary); color: white; }
         
         .avatar { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
-        .avatar-fallback { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--primary); display: flex; justify-content: center; align-items: center; font-weight: 900; background: linear-gradient(135deg, #1e1b4b, #3b82f6); }
+        .avatar-fallback { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--primary); display: flex; justify-content: center; align-items: center; font-weight: 900; background: linear-gradient(135deg, #1e1b4b, #3b82f6); color: white; }
 
-        /* --- تیکر خبری (اسلایدی) --- */
+        /* --- تیکر (اسلایدی) --- */
         .ticker-wrap {
             width: 100%; height: 35px; background: rgba(59, 130, 246, 0.1);
             border-bottom: 1px solid var(--border); display: flex; align-items: center;
@@ -60,17 +72,21 @@
         }
         .ticker-label { background: var(--danger); color: white; padding: 2px 10px; font-size: 0.7rem; font-weight: 900; border-radius: 4px; margin: 0 10px; z-index: 2; box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
         .ticker-text {
-            font-size: 0.85rem; font-weight: 700; color: #e2e8f0;
+            font-size: 0.85rem; font-weight: 700; color: var(--text);
             transition: opacity 0.5s ease, transform 0.5s ease;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .ticker-text.fade { opacity: 0; transform: translateY(-10px); }
 
         /* --- بخش‌ها --- */
-        .section { padding: 20px; display: none; animation: fadeIn 0.4s ease; }
-        .section.active { display: block; }
+        .section { padding: 20px; display: none; }
+        .section.active { display: block; animation: fadeIn 0.4s ease; }
         .section-title { font-size: 1.1rem; font-weight: 900; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
         .section-title span { color: var(--primary); font-size: 0.8rem; font-weight: 400; cursor: pointer; }
+
+        /* --- جستجو --- */
+        .search-bar { width: 100%; background: var(--surface); border: 1px solid var(--border); padding: 12px 15px; border-radius: 12px; color: var(--text); font-family: inherit; margin-bottom: 15px; outline: none; transition: 0.3s; }
+        .search-bar:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--primary-glow); }
 
         /* --- بازار --- */
         .market-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -86,15 +102,17 @@
         .market-card .change.up { color: var(--success); }
         .market-card .change.down { color: var(--danger); }
 
-        /* --- اخبار --- */
+        /* --- فیلترها --- */
         .news-filters { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; scrollbar-width: none; }
         .news-filters::-webkit-scrollbar { display: none; }
         .filter-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; white-space: nowrap; cursor: pointer; transition: 0.2s; }
-        .news-filters .filter-btn.active { background: var(--primary); border-color: var(--primary); box-shadow: 0 0 15px var(--primary-glow); }
+        .news-filters .filter-btn.active { background: var(--primary); border-color: var(--primary); box-shadow: 0 0 15px var(--primary-glow); color: white; }
         
+        /* --- کارت خبر --- */
         .news-card {
             background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
-            overflow: hidden; margin-bottom: 15px; transition: 0.2s; cursor: pointer;
+            overflow: hidden; margin-bottom: 15px; transition: 0.3s; cursor: pointer;
+            animation: slideUp 0.4s ease forwards; opacity: 0; transform: translateY(20px);
         }
         .news-card:active { transform: scale(0.98); border-color: var(--primary); }
         .news-img { width: 100%; height: 180px; object-fit: cover; background: #1a1a2e; }
@@ -102,18 +120,22 @@
         .news-meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--primary); font-weight: 700; margin-bottom: 8px; }
         .news-title { font-size: 1rem; font-weight: 900; line-height: 1.5; margin-bottom: 10px; }
         .news-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        .news-actions { display: flex; gap: 10px; margin-top: 15px; border-top: 1px solid var(--border); padding-top: 10px; }
+        .action-icon { background: transparent; border: none; color: var(--muted); font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; gap: 5px; font-family: inherit; font-size: 0.8rem; font-weight: 700; transition: 0.2s; }
+        .action-icon:active { color: var(--primary); transform: scale(0.9); }
 
         /* --- ابزارها --- */
         .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .tool-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .tool-card:active { background: var(--primary); transform: translateY(2px); box-shadow: 0 0 20px var(--primary-glow); }
+        .tool-card:active { background: var(--primary); transform: translateY(2px); box-shadow: 0 0 20px var(--primary-glow); color: white; }
         .tool-card i { font-size: 2rem; margin-bottom: 10px; display: block; font-style: normal; }
         .tool-card span { font-size: 0.9rem; font-weight: 700; }
 
         /* --- پروفایل --- */
         .profile-header { text-align: center; padding: 20px 0; }
         .profile-avatar { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--primary); box-shadow: 0 0 30px var(--primary-glow); object-fit: cover; margin: 0 auto 15px auto; }
-        .profile-avatar-fallback { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--primary); box-shadow: 0 0 30px var(--primary-glow); display: flex; justify-content: center; align-items: center; font-size: 2.5rem; font-weight: 900; background: linear-gradient(135deg, #1e1b4b, #3b82f6); margin: 0 auto 15px auto; }
+        .profile-avatar-fallback { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--primary); box-shadow: 0 0 30px var(--primary-glow); display: flex; justify-content: center; align-items: center; font-size: 2.5rem; font-weight: 900; background: linear-gradient(135deg, #1e1b4b, #3b82f6); color: white; margin: 0 auto 15px auto; }
         .profile-name { font-size: 1.2rem; font-weight: 900; }
         
         .menu-list { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-top: 20px; }
@@ -123,7 +145,7 @@
         .menu-item span { font-size: 0.9rem; font-weight: 700; }
         .menu-item .arrow { color: var(--muted); }
 
-        /* --- نوار پایین لوکس --- */
+        /* --- نوار پایین --- */
         .bottom-nav-container { position: fixed; bottom: 20px; left: 20px; right: 20px; display: flex; justify-content: center; z-index: 1000; }
         .bottom-nav {
             background: rgba(15, 15, 20, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
@@ -132,6 +154,8 @@
             width: 100%; max-width: 400px; height: 65px; padding: 0 10px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.1);
         }
+        body.light-theme .bottom-nav { background: rgba(255, 255, 255, 0.9); border-color: rgba(0,0,0,0.1); box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--muted); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; width: 60px; height: 60px; border-radius: 20px; position: relative; }
         .nav-item.active { color: var(--primary); transform: translateY(-5px); }
         .nav-item .icon { font-size: 1.4rem; margin-bottom: 2px; transition: 0.3s; filter: grayscale(1); opacity: 0.7; }
@@ -139,7 +163,7 @@
         .nav-item .label { font-size: 0.6rem; font-weight: 700; opacity: 0; transform: translateY(10px); transition: 0.3s; position: absolute; bottom: 5px; }
         .nav-item.active .label { opacity: 1; transform: translateY(0); }
 
-        /* --- مودال (Modal) --- */
+        /* --- مودال --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px);
@@ -156,25 +180,27 @@
         .modal-overlay.active .modal-content { transform: translateY(0); }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .modal-title { font-size: 1.2rem; font-weight: 900; }
-        .modal-close { background: var(--surface); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
+        .modal-close { background: var(--surface); border: none; color: var(--text); width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
 
-        /* --- ماشین حساب و مترجم --- */
-        .calc-screen { background: rgba(0,0,0,0.5); padding: 20px; text-align: left; font-size: 2rem; font-weight: 900; color: var(--success); direction: ltr; border-radius: 12px; margin-bottom: 15px; min-height: 80px; word-wrap: break-word; }
+        /* --- ماشین حساب و ابزارها --- */
+        .calc-screen { background: rgba(0,0,0,0.5); padding: 20px; text-align: left; font-size: 2rem; font-weight: 900; color: var(--success); direction: ltr; border-radius: 12px; margin-bottom: 15px; min-height: 80px; }
         .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .calc-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; font-size: 1.2rem; font-weight: 900; color: white; cursor: pointer; transition: 0.1s; }
-        .calc-btn:active { background: var(--primary); transform: scale(0.9); }
+        .calc-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; font-size: 1.2rem; font-weight: 900; color: var(--text); cursor: pointer; transition: 0.1s; }
+        .calc-btn:active { background: var(--primary); transform: scale(0.9); color: white; }
         .calc-btn.op { color: var(--secondary); }
-        .calc-btn.equal { background: var(--primary); grid-column: span 2; }
+        .calc-btn.equal { background: var(--primary); grid-column: span 2; color: white; }
         
         .input-group { margin-bottom: 15px; }
         .input-group label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; }
-        .form-control { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 15px; border-radius: 12px; color: white; font-family: inherit; font-size: 1rem; outline: none; }
-        .form-control:focus { border-color: var(--primary); }
+        .form-control { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 15px; border-radius: 12px; color: var(--text); font-family: inherit; font-size: 1rem; outline: none; }
         .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--primary); color: white; font-weight: 900; font-size: 1rem; font-family: inherit; cursor: pointer; margin-top: 10px; }
         .result-box { margin-top: 20px; padding: 20px; border-radius: 12px; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); color: var(--success); text-align: center; font-weight: 700; font-size: 1.1rem; display: none; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .spinner { text-align: center; color: var(--primary); padding: 20px; font-size: 0.9rem; font-weight: 700; }
+        /* --- انیمیشن‌ها --- */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .spinner { text-align: center; color: var(--primary); padding: 20px; font-size: 0.9rem; font-weight: 700; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     </style>
 </head>
 <body>
@@ -182,8 +208,8 @@
     <div class="header">
         <div class="brand"><h1>RXNews</h1></div>
         <div class="header-actions">
-            <div class="icon-btn" onclick="tg.showAlert('جستجوی هوشمند در فاز بعدی...')">🔍</div>
-            <div class="icon-btn" onclick="switchTab('profile', document.querySelectorAll('.nav-item')[3])">
+            <div class="icon-btn" onclick="tg.showAlert('جستجوی پیشرفته در فاز بعدی...')">🔍</div>
+            <div class="icon-btn" onclick="switchTab('profile', document.querySelectorAll('.nav-item')[4])">
                 <img id="header-avatar" class="avatar" src="" style="display:none;">
                 <div id="header-avatar-fallback" class="avatar-fallback">R</div>
             </div>
@@ -195,6 +221,7 @@
         <div class="ticker-text" id="ticker-content">در حال دریافت اخبار...</div>
     </div>
 
+    <!-- خانه -->
     <div id="home" class="section active">
         <div class="section-title">بازار مالی <span>لحظه‌ای</span></div>
         <div class="market-grid" id="market-data">
@@ -207,17 +234,21 @@
         <div id="home-news"></div>
     </div>
 
+    <!-- اخبار -->
     <div id="news" class="section">
+        <input type="text" class="search-bar" placeholder="🔍 جستجو در اخبار..." id="search-input">
         <div class="news-filters" id="news-filters">
             <button class="filter-btn active" data-cat="general">عمومی</button>
             <button class="filter-btn" data-cat="politics">سیاسی</button>
             <button class="filter-btn" data-cat="economy">اقتصادی</button>
-            <button class="filter-btn" data-cat="sport">ورزشی</button>
             <button class="filter-btn" data-cat="tech">فناوری</button>
+            <button class="filter-btn" data-cat="sport">ورزشی</button>
+            <button class="filter-btn" data-cat="art">هنر</button>
         </div>
         <div id="news-list" class="news-list"></div>
     </div>
 
+    <!-- ابزارها -->
     <div id="tools" class="section">
         <div class="section-title">جعبه‌ابزار هوشمند</div>
         <div class="tools-grid">
@@ -228,6 +259,7 @@
         </div>
     </div>
 
+    <!-- پروفایل -->
     <div id="profile" class="section">
         <div class="profile-header">
             <img id="profile-avatar" class="profile-avatar" src="" style="display:none;">
@@ -236,8 +268,7 @@
         </div>
         <div class="menu-list">
             <div class="menu-item" onclick="openModal('saved')"><span>ذخیره‌شده‌ها</span><span class="arrow">←</span></div>
-            <div class="menu-item" onclick="openModal('history')"><span>تاریخچه مطالعه</span><span class="arrow">←</span></div>
-            <div class="menu-item" onclick="openModal('settings')"><span>تنظیمات</span><span class="arrow">←</span></div>
+            <div class="menu-item" onclick="openModal('settings')"><span>تنظیمات و تم</span><span class="arrow">←</span></div>
             <div class="menu-item" onclick="openModal('about')"><span>درباره RXNews</span><span class="arrow">←</span></div>
         </div>
     </div>
@@ -251,7 +282,6 @@
         </div>
     </div>
 
-    <!-- مودال (Modal) -->
     <div class="modal-overlay" id="modal" onclick="closeModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
@@ -277,7 +307,6 @@
             document.querySelectorAll('.avatar-fallback, .profile-avatar-fallback').forEach(el => el.innerText = char);
         }
 
-        // --- مدیریت تب‌ها ---
         function switchTab(tabId, element) {
             tg.HapticFeedback.impactOccurred('light');
             document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
@@ -289,7 +318,33 @@
             window.scrollTo(0, 0);
         }
 
-        // --- مدیریت مودال‌ها (ابزارها و پروفایل) ---
+        // ذخیره خبر
+        function saveArticle(id, title) {
+            tg.HapticFeedback.notificationOccurred('success');
+            let saved = JSON.parse(localStorage.getItem('saved_news') || '[]');
+            if(!saved.find(x => x.id === id)) {
+                saved.push({id, title});
+                localStorage.setItem('saved_news', JSON.stringify(saved));
+                tg.showAlert("✅ خبر در بخش ذخیره‌شده‌ها ثبت شد.");
+            } else {
+                tg.showAlert("این خبر قبلاً ذخیره شده است.");
+            }
+        }
+
+        // خواندن متن (TTS)
+        function readText(text) {
+            tg.HapticFeedback.impactOccurred('light');
+            if('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'fa-IR';
+                window.speechSynthesis.speak(utterance);
+                tg.showAlert("🔊 در حال خواندن خبر...");
+            } else {
+                tg.showAlert("مرورگر شما از خواندن صوتی پشتیبانی نمی‌کند.");
+            }
+        }
+
+        // --- مودال‌ها ---
         function openModal(type) {
             tg.HapticFeedback.impactOccurred('light');
             const body = document.getElementById('modal-body');
@@ -297,65 +352,31 @@
             
             if(type === 'calc') {
                 title.innerText = "ماشین‌حساب";
-                body.innerHTML = `
-                    <div class="calc-screen" id="calc-screen">0</div>
-                    <div class="calc-grid">
-                        <button class="calc-btn op" onclick="calcInput('C')">C</button>
-                        <button class="calc-btn op" onclick="calcInput('/')">÷</button>
-                        <button class="calc-btn op" onclick="calcInput('*')">×</button>
-                        <button class="calc-btn op" onclick="calcInput('-')">-</button>
-                        <button class="calc-btn" onclick="calcInput('7')">7</button>
-                        <button class="calc-btn" onclick="calcInput('8')">8</button>
-                        <button class="calc-btn" onclick="calcInput('9')">9</button>
-                        <button class="calc-btn op" onclick="calcInput('+')">+</button>
-                        <button class="calc-btn" onclick="calcInput('4')">4</button>
-                        <button class="calc-btn" onclick="calcInput('5')">5</button>
-                        <button class="calc-btn" onclick="calcInput('6')">6</button>
-                        <button class="calc-btn equal" style="grid-row: span 2;" onclick="calcInput('=')">=</button>
-                        <button class="calc-btn" onclick="calcInput('1')">1</button>
-                        <button class="calc-btn" onclick="calcInput('2')">2</button>
-                        <button class="calc-btn" onclick="calcInput('3')">3</button>
-                        <button class="calc-btn" style="grid-column: span 3;" onclick="calcInput('0')">0</button>
-                    </div>
-                `;
+                body.innerHTML = `<div class="calc-screen" id="calc-screen">0</div><div class="calc-grid">
+                    <button class="calc-btn op" onclick="calcInput('C')">C</button><button class="calc-btn op" onclick="calcInput('/')">÷</button><button class="calc-btn op" onclick="calcInput('*')">×</button><button class="calc-btn op" onclick="calcInput('-')">-</button>
+                    <button class="calc-btn" onclick="calcInput('7')">7</button><button class="calc-btn" onclick="calcInput('8')">8</button><button class="calc-btn" onclick="calcInput('9')">9</button><button class="calc-btn op" onclick="calcInput('+')">+</button>
+                    <button class="calc-btn" onclick="calcInput('4')">4</button><button class="calc-btn" onclick="calcInput('5')">5</button><button class="calc-btn" onclick="calcInput('6')">6</button><button class="calc-btn equal" style="grid-row: span 2;" onclick="calcInput('=')">=</button>
+                    <button class="calc-btn" onclick="calcInput('1')">1</button><button class="calc-btn" onclick="calcInput('2')">2</button><button class="calc-btn" onclick="calcInput('3')">3</button>
+                    <button class="calc-btn" style="grid-column: span 3;" onclick="calcInput('0')">0</button></div>`;
             } else if(type === 'trans') {
-                title.innerText = "مترجم هوشمند";
-                body.innerHTML = `
-                    <div class="input-group">
-                        <label>متن خود را وارد کنید (فارسی یا انگلیسی):</label>
-                        <input type="text" id="trans-input" class="form-control" placeholder="...">
-                    </div>
-                    <button class="btn" onclick="doTranslate()">ترجمه کن</button>
-                    <div id="trans-result" class="result-box"></div>
-                `;
+                title.innerText = "مترجم";
+                body.innerHTML = `<div class="input-group"><label>متن (فارسی/انگلیسی):</label><input type="text" id="trans-input" class="form-control"></div><button class="btn" onclick="doTranslate()">ترجمه</button><div id="trans-result" class="result-box"></div>`;
             } else if(type === 'currency') {
-                title.innerText = "تبدیل ارز و طلا";
-                body.innerHTML = `
-                    <div class="input-group">
-                        <label>مثلاً بنویسید: 50 دلار / 0.5 بیت کوین</label>
-                        <input type="text" id="curr-input" class="form-control" placeholder="...">
-                    </div>
-                    <button class="btn" onclick="doConvert()">تبدیل کن</button>
-                    <div id="curr-result" class="result-box"></div>
-                `;
+                title.innerText = "تبدیل ارز";
+                body.innerHTML = `<div class="input-group"><label>مثلاً 50 دلار:</label><input type="text" id="curr-input" class="form-control"></div><button class="btn" onclick="doConvert()">تبدیل</button><div id="curr-result" class="result-box"></div>`;
             } else if(type === 'saved') {
                 title.innerText = "ذخیره‌شده‌ها";
-                body.innerHTML = `<div style="text-align:center; color:var(--muted); padding:20px;">هنوز خبری ذخیره نکرده‌اید.</div>`;
-            } else if(type === 'history') {
-                title.innerText = "تاریخچه";
-                body.innerHTML = `<div style="text-align:center; color:var(--muted); padding:20px;">تاریخچه شما خالی است.</div>`;
+                let saved = JSON.parse(localStorage.getItem('saved_news') || '[]');
+                if(saved.length === 0) body.innerHTML = '<div style="text-align:center; color:var(--muted);">هیچ خبری ذخیره نکرده‌اید.</div>';
+                else body.innerHTML = saved.map(s => `<div style="padding:10px; border-bottom:1px solid var(--border);">${s.title}</div>`).join('');
             } else if(type === 'settings') {
                 title.innerText = "تنظیمات";
-                body.innerHTML = `
-                    <div class="input-group"><label>حالت تاریک</label><input type="checkbox" checked disabled></div>
-                    <div class="input-group"><label>اعلان خبر فوری</label><input type="checkbox" checked disabled></div>
-                    <p style="font-size:0.8rem; color:var(--muted);">تنظیمات پیشرفته در فاز بعدی پروژه Omniverse فعال می‌شود.</p>
-                `;
+                body.innerHTML = `<div class="menu-item" onclick="toggleTheme()"><span>تغییر تم (روشن/تاریک)</span><span class="arrow">←</span></div>
+                                  <div class="menu-item" onclick="tg.showAlert('در فاز بعدی...')"><span>اعلان‌ها</span><span class="arrow">←</span></div>`;
             } else if(type === 'about') {
                 title.innerText = "درباره RXNews";
-                body.innerHTML = `<div style="text-align:center; line-height:2;">پروژه Omniverse<br>نسخه ۹.۰<br><br>طراحی و توسعه: <b>حسام فیضی</b><br>ساخته شده برای آینده خبر.</div>`;
+                body.innerHTML = `<div style="text-align:center; line-height:2;">پروژه Omniverse<br>نسخه ۱۰.۰<br><br>طراحی و توسعه: <b>حسام فیضی</b></div>`;
             }
-
             document.getElementById('modal').classList.add('active');
         }
 
@@ -364,7 +385,12 @@
             document.getElementById('modal').classList.remove('active');
         }
 
-        // --- توابع ماشین حساب ---
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            tg.HapticFeedback.impactOccurred('medium');
+        }
+
+        // --- ماشین حساب ---
         let calcStr = "0";
         function calcInput(val) {
             tg.HapticFeedback.impactOccurred('light');
@@ -375,7 +401,7 @@
             if(screen) screen.innerText = calcStr;
         }
 
-        // --- توابع مترجم ---
+        // --- مترجم ---
         async function doTranslate() {
             const text = document.getElementById('trans-input').value;
             const resBox = document.getElementById('trans-result');
@@ -389,7 +415,7 @@
             } catch(e) { resBox.innerText = "❌ خطا در ترجمه."; }
         }
 
-        // --- توابع تبدیل ارز ---
+        // --- تبدیل ارز ---
         async function doConvert() {
             const text = document.getElementById('curr-input').value.toLowerCase();
             const resBox = document.getElementById('curr-result');
@@ -404,10 +430,6 @@
                 let final = "";
                 if(match[2].includes("دلار")) final = `${match[1]} دلار = ${(match[1]*usd).toLocaleString('fa-IR')} تومان`;
                 else if(match[2].includes("تومان")) final = `${Number(match[1]).toLocaleString('fa-IR')} تومان = ${(match[1]/usd).toFixed(2)} دلار`;
-                else if(match[2].includes("بیت") || match[2].includes("btc")) {
-                    const btc = await (await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd")).json();
-                    final = `${match[1]} بیت‌کوین = ${(match[1]*btc.bitcoin.usd*usd).toLocaleString('fa-IR')} تومان`;
-                }
                 resBox.innerText = final || "❌ ارز نامعتبر.";
             } catch(e) { resBox.innerText = "❌ خطا در شبکه."; }
         }
@@ -422,90 +444,87 @@
                     const i = p.find(x => x.symbol === sym);
                     return i ? { price: i.price, change: i.change, name, unit } : null;
                 };
-                const cards = [
-                    getItem("USD_IRR_FREE", "دلار", "تومان"),
-                    getItem("GOLD_18K_IRR", "طلا", "تومان"),
-                    getItem("COIN_EMAMI_IRR", "سکه", "تومان")
-                ];
+                const cards = [ getItem("USD_IRR_FREE", "دلار", "تومان"), getItem("GOLD_18K_IRR", "طلا", "تومان"), getItem("COIN_EMAMI_IRR", "سکه", "تومان") ];
                 try {
                     const btc = await (await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true")).json();
                     if (btc.bitcoin) cards.push({ name: "بیت‌کوین", price: btc.bitcoin.usd, change: btc.bitcoin.usd_24h_change, unit: "دلار" });
                 } catch(e) {}
-
                 let html = '';
                 cards.forEach(c => {
                     if(!c) return;
-                    let changeHtml = '';
-                    if (c.change !== undefined) {
-                        const isUp = c.change >= 0;
-                        changeHtml = `<div class="change ${isUp ? 'up' : 'down'}">${isUp ? '+' : ''}${c.change.toFixed(2)}%</div>`;
-                    }
-                    let displayPrice = c.price.toLocaleString('fa-IR');
-                    if (c.unit === "دلار") displayPrice = "$" + c.price.toLocaleString('en-US');
-
-                    html += `
-                        <div class="market-card">
-                            <div class="title">${c.name} <span>${c.unit}</span></div>
-                            <div class="price">${displayPrice}</div>
-                            ${changeHtml}
-                        </div>
-                    `;
+                    let changeHtml = c.change !== undefined ? `<div class="change ${c.change >= 0 ? 'up' : 'down'}">${c.change >= 0 ? '+' : ''}${c.change.toFixed(2)}%</div>` : '';
+                    let dp = c.unit === "دلار" ? "$" + c.price.toLocaleString('en-US') : c.price.toLocaleString('fa-IR');
+                    html += `<div class="market-card"><div class="title">${c.name} <span>${c.unit}</span></div><div class="price">${dp}</div>${changeHtml}</div>`;
                 });
                 document.getElementById('market-data').innerHTML = html;
             } catch(e) {}
         }
 
-        // --- اخبار ---
+        // --- اخبار (فیدهای جدید برای بخش اقتصادی و هنری) ---
         const feeds = {
             'general': 'https://feeds.bbci.co.uk/persian/rss.xml',
             'politics': 'https://feeds.bbci.co.uk/persian/rss.xml',
-            'economy': 'https://www.iranintl.com/feed',
+            'economy': 'https://www.isna.ir/rss/tp/34',
+            'tech': 'https://www.isna.ir/rss/tp/41',
             'sport': 'https://www.iranintl.com/feed',
-            'tech': 'https://www.iranintl.com/feed'
+            'art': 'https://www.isna.ir/rss/tp/20'
         };
 
-        async function loadNews(category) {
+        let allNewsCache = [];
+
+        async function loadNews(category, searchQuery = '') {
             const container = document.getElementById('news-list');
-            container.innerHTML = '<div class="spinner">⏳ در حال دریافت اخبار...</div>';
+            container.innerHTML = '<div class="spinner">⏳ دریافت...</div>';
             try {
-                const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feeds[category])}`;
+                // برای بخش هنر از کلمات کلیدی سازها هم استفاده میکنیم
+                let url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feeds[category])}`;
                 const data = await (await fetch(url)).json();
+                
                 if (data.status === 'ok' && data.items.length > 0) {
                     let items = data.items;
-                    if (['economy', 'sport', 'tech'].includes(category)) {
-                        const kws = {
-                            'sport': ["ورزش", "فوتبال", "لیگ", "تیم"],
-                            'economy': ["اقتصاد", "دلار", "تورم", "بازار"],
-                            'tech': ["فناوری", "اینترنت", "موبایل", "هوش مصنوعی"]
-                        };
-                        items = items.filter(i => kws[category].some(k => i.title.includes(k) || i.description.includes(k)));
-                    }
-                    if (items.length === 0) { container.innerHTML = '<div class="spinner">❌ خبری یافت نشد.</div>'; return; }
+                    
+                    // فیلتر اختصاصی
+                    if (category === 'sport') items = items.filter(i => ["ورزش", "فوتبال", "لیگ", "تیم"].some(k => i.title.includes(k)));
+                    if (category === 'art') items = items.filter(i => ["هنر", "نقاشی", "موسیقی", "ساز", "ستار", "تنبور", "کمانچه", "کنسرت", "سینما"].some(k => i.title.includes(k) || i.description.includes(k)));
+                    
+                    if (searchQuery) items = items.filter(i => i.title.includes(searchQuery) || i.description.includes(searchQuery));
 
+                    if (items.length === 0) { container.innerHTML = '<div class="spinner">❌ خبری یافت نشد.</div>'; return; }
+                    
+                    allNewsCache = items;
                     let html = '';
-                    items.slice(0, 6).forEach(item => {
+                    items.slice(0, 10).forEach((item, index) => {
                         let img = item.thumbnail || 'https://via.placeholder.com/400x200/1e1b4b/ffffff?text=RXNews';
                         let date = item.pubDate ? new Date(item.pubDate).toLocaleDateString('fa-IR') : '';
                         let desc = item.description.replace(/<[^>]*>?/gm, '');
+                        
                         html += `
-                            <div class="news-card" onclick="tg.openLink('${item.link}')">
+                            <div class="news-card" style="animation-delay: ${index * 0.1}s" onclick="tg.openLink('${item.link}')">
                                 <img src="${img}" class="news-img" onerror="this.src='https://via.placeholder.com/400x200/1e1b4b/ffffff?text=RXNews'">
                                 <div class="news-content">
                                     <div class="news-meta"><span>${category.toUpperCase()}</span><span>${date}</span></div>
                                     <div class="news-title">${item.title}</div>
                                     <div class="news-desc">${desc}</div>
+                                    <div class="news-actions">
+                                        <button class="action-icon" onclick="event.stopPropagation(); saveArticle('${item.link}', '${item.title.replace(/'/g, "\\'")}')">📌 ذخیره</button>
+                                        <button class="action-icon" onclick="event.stopPropagation(); readText('${item.title.replace(/'/g, "\\'")}')">🔊 شنیدن</button>
+                                    </div>
                                 </div>
                             </div>`;
                     });
                     container.innerHTML = html;
-                    
-                    // شروع تیکر برای اخبار عمومی
                     if (category === 'general') startTicker(items);
                 } else {
-                    container.innerHTML = '<div class="spinner">❌ خطا در دریافت.</div>';
+                    container.innerHTML = '<div class="spinner">❌ خطا در دریافت (فیلترشکن را روشن کنید).</div>';
                 }
             } catch(e) { container.innerHTML = '<div class="spinner">❌ خطای شبکه.</div>'; }
         }
+
+        // --- جستجو در صفحه اخبار ---
+        document.getElementById('search-input')?.addEventListener('input', (e) => {
+            const activeBtn = document.querySelector('.filter-btn.active');
+            loadNews(activeBtn ? activeBtn.dataset.cat : 'general', e.target.value);
+        });
 
         // --- تیکر ۸ ثانیه‌ای ---
         let tickerItems = [];
@@ -523,8 +542,8 @@
                 el.innerText = tickerItems[tickerIndex];
                 el.classList.remove('fade');
                 tickerIndex = (tickerIndex + 1) % tickerItems.length;
-                setTimeout(showNextTicker, 8000); // ۸ ثانیه تاخیر
-            }, 500); // زمان انیمیشن محو شدن
+                setTimeout(showNextTicker, 8000);
+            }, 500);
         }
 
         document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -532,6 +551,7 @@
                 tg.HapticFeedback.impactOccurred('light');
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
+                document.getElementById('search-input').value = ''; // پاک کردن سرچ
                 loadNews(e.target.dataset.cat);
             });
         });
@@ -546,11 +566,7 @@
                     let html = '';
                     data.items.slice(0, 3).forEach(item => {
                         let img = item.thumbnail || 'https://via.placeholder.com/400x200/1e1b4b/ffffff?text=RXNews';
-                        html += `
-                            <div class="news-card" onclick="tg.openLink('${item.link}')">
-                                <img src="${img}" class="news-img">
-                                <div class="news-content"><div class="news-title">${item.title}</div></div>
-                            </div>`;
+                        html += `<div class="news-card" onclick="tg.openLink('${item.link}')"><img src="${img}" class="news-img"><div class="news-content"><div class="news-title">${item.title}</div></div></div>`;
                     });
                     document.getElementById('home-news').innerHTML = html;
                 }

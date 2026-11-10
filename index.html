@@ -7,7 +7,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* --- 1. سیستم طراحی و متغیرها --- */
+        /* --- 1. سیستم طراحی --- */
         :root {
             --bg: #030305;
             --surface: rgba(18, 18, 25, 0.65);
@@ -21,7 +21,6 @@
             --muted: #64748b;
             --success: #10b981;
             --danger: #ef4444;
-            --nav-height: 80px;
             --font: 'Vazirmatn', sans-serif;
         }
 
@@ -36,142 +35,124 @@
             color: var(--text);
             min-height: 100vh;
             overflow-x: hidden;
-            padding-bottom: calc(var(--nav-height) + 20px);
+            padding-bottom: 100px;
             -webkit-font-smoothing: antialiased;
-            transition: background 0.3s;
         }
 
-        /* اسکرول‌بار نامرئی */
         ::-webkit-scrollbar { width: 0; }
 
-        /* --- 2. هدر (Header) --- */
+        /* --- 2. هدر --- */
         .header {
-            padding: 15px 20px;
-            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
             position: sticky; top: 0; z-index: 100;
-            background: rgba(3, 3, 5, 0.7); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            background: rgba(3, 3, 5, 0.7); backdrop-filter: blur(25px);
             border-bottom: 1px solid var(--border);
         }
-        .brand h1 { font-size: 1.6rem; font-weight: 900; background: linear-gradient(90deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; }
+        .brand h1 { font-size: 1.5rem; font-weight: 900; background: linear-gradient(90deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .header-actions { display: flex; gap: 12px; align-items: center; }
-        .icon-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; transition: 0.2s; }
-        .icon-btn:active { transform: scale(0.9); background: var(--primary); color: #000; }
-        
-        .avatar { width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--primary); box-shadow: 0 0 15px var(--primary-glow); object-fit: cover; cursor: pointer; }
-        .avatar-fallback { width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--primary); display: flex; justify-content: center; align-items: center; font-weight: 900; background: #111; box-shadow: 0 0 15px var(--primary-glow); cursor: pointer; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); box-shadow: 0 0 15px var(--primary-glow); object-fit: cover; cursor: pointer; }
+        .avatar-fallback { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); display: flex; justify-content: center; align-items: center; font-weight: 900; background: #111; cursor: pointer; }
 
-        /* --- 3. تیکر خبری --- */
-        .ticker-wrap { width: 100%; overflow: hidden; background: rgba(255, 8, 68, 0.1); border-bottom: 1px solid var(--border); padding: 8px 0; display: flex; align-items: center; position: sticky; top: 71px; z-index: 99; backdrop-filter: blur(10px); }
-        .ticker { white-space: nowrap; animation: ticker 25s linear infinite; font-size: 0.85rem; font-weight: 700; color: var(--text); }
+        /* --- 3. تیکر --- */
+        .ticker-wrap { width: 100%; overflow: hidden; background: rgba(255, 8, 68, 0.1); border-bottom: 1px solid var(--border); padding: 8px 0; display: flex; align-items: center; position: sticky; top: 71px; z-index: 99; }
+        .ticker { white-space: nowrap; animation: ticker 25s linear infinite; font-size: 0.85rem; font-weight: 700; }
         .ticker span { margin-right: 40px; color: #cbd5e1; }
-        .ticker span::before { content: '•'; color: var(--accent); margin-left: 10px; }
         @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
-        /* --- 4. ساختار صفحات (Sections) --- */
+        /* --- 4. ساختار صفحات --- */
         .section { padding: 20px; display: none; animation: fadeIn 0.4s ease; }
         .section.active { display: block; }
-        
-        .section-title { font-size: 1.2rem; font-weight: 900; margin: 25px 0 15px 0; display: flex; justify-content: space-between; align-items: center; color: #fff; border-right: 4px solid var(--primary); padding-right: 12px; }
-        .section-title span { font-size: 0.8rem; color: var(--primary); font-weight: 400; }
+        .section-title { font-size: 1.2rem; font-weight: 900; margin: 25px 0 15px 0; border-right: 4px solid var(--primary); padding-right: 12px; }
 
-        /* --- 5. کارت هیرو (Omniverse) --- */
+        /* --- 5. هیرو --- */
         .hero-card {
             background: linear-gradient(135deg, rgba(0, 242, 254, 0.15), rgba(255, 8, 68, 0.15));
             border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 24px; padding: 25px;
-            position: relative; overflow: hidden; backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8); margin-bottom: 20px;
+            margin-bottom: 20px; box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8);
         }
-        .hero-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%); animation: rotate 10s linear infinite; }
-        @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .hero-card h2 { font-size: 1.4rem; font-weight: 900; margin-bottom: 10px; position: relative; z-index: 2; }
-        .hero-card p { font-size: 0.9rem; color: #ccc; margin-bottom: 15px; line-height: 1.6; position: relative; z-index: 2; }
-        .hero-btn { background: var(--primary); color: #000; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 900; font-family: inherit; cursor: pointer; position: relative; z-index: 2; box-shadow: 0 0 15px var(--primary-glow); transition: 0.2s; }
-        .hero-btn:active { transform: scale(0.95); }
+        .hero-card h2 { font-size: 1.3rem; font-weight: 900; margin-bottom: 10px; }
+        .hero-card p { font-size: 0.9rem; color: #ccc; line-height: 1.6; margin-bottom: 15px; }
+        .hero-btn { background: var(--primary); color: #000; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 900; cursor: pointer; }
 
-        /* --- 6. ویجت‌های بازار (Markets) --- */
+        /* --- 6. بازار --- */
         .market-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .market-card {
-            background: var(--surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border); border-radius: 20px; padding: 18px;
-            position: relative; overflow: hidden; transition: 0.3s; cursor: pointer;
-            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.8);
+            background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 18px;
+            backdrop-filter: blur(20px); transition: 0.3s;
         }
-        .market-card:active { transform: scale(0.95); border-color: var(--primary); box-shadow: 0 0 20px var(--primary-glow); }
         .market-card .m-icon { font-size: 1.5rem; margin-bottom: 10px; display: block; }
         .market-card .m-title { font-size: 0.8rem; color: var(--muted); font-weight: 700; margin-bottom: 8px; }
-        .market-card .m-value { font-size: 1.1rem; font-weight: 900; color: #fff; direction: ltr; text-align: right; }
+        .market-card .m-value { font-size: 1.1rem; font-weight: 900; direction: ltr; text-align: right; }
         .market-card .m-change { font-size: 0.75rem; font-weight: 700; margin-top: 5px; direction: ltr; text-align: right; }
         .market-card .m-change.up { color: var(--success); }
         .market-card .m-change.down { color: var(--danger); }
 
-        /* --- 7. شبکه ماژول‌های Omniverse --- */
+        /* --- 7. ماژول‌ها --- */
         .modules-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
         .module-box {
             background: var(--surface); border: 1px solid var(--border); border-radius: 18px;
             padding: 18px 8px; text-align: center; cursor: pointer; transition: 0.2s;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
-            backdrop-filter: blur(10px);
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
         }
         .module-box:active { background: rgba(0, 242, 254, 0.1); transform: translateY(-3px); border-color: var(--primary); }
-        .module-box .mod-icon { font-size: 1.8rem; filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.5)); }
+        .module-box .mod-icon { font-size: 1.8rem; }
         .module-box .mod-name { font-size: 0.75rem; font-weight: 700; color: #ddd; }
 
-        /* --- 8. اخبار (News) --- */
+        /* --- 8. اخبار --- */
         .news-card {
             background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
-            overflow: hidden; margin-bottom: 15px; cursor: pointer; transition: 0.3s;
+            overflow: hidden; margin-bottom: 15px; cursor: pointer;
         }
-        .news-card:active { transform: scale(0.98); border-color: var(--primary); }
         .news-img { width: 100%; height: 180px; object-fit: cover; background: #111; }
         .news-content { padding: 18px; }
         .news-meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--primary); font-weight: 700; margin-bottom: 10px; }
-        .news-title { font-size: 1rem; font-weight: 900; line-height: 1.6; margin-bottom: 10px; color: #fff; }
+        .news-title { font-size: 1rem; font-weight: 900; line-height: 1.6; margin-bottom: 10px; }
         .news-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.7; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
-        /* --- 9. نوار ناوبری پایین (Bottom Nav) --- */
+        /* --- 9. نوار پایین --- */
         .bottom-nav-container { position: fixed; bottom: 20px; left: 20px; right: 20px; display: flex; justify-content: center; z-index: 1000; }
         .bottom-nav {
-            background: rgba(10, 10, 15, 0.85); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            background: rgba(10, 10, 15, 0.85); backdrop-filter: blur(30px);
             border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 35px;
             display: flex; justify-content: space-around; align-items: center;
-            width: 100%; max-width: 400px; height: 70px; padding: 0 10px;
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255,255,255,0.1);
+            width: 100%; max-width: 400px; height: 70px;
         }
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--muted); transition: 0.3s; cursor: pointer; width: 65px; height: 65px; border-radius: 25px; position: relative; }
         .nav-item.active { color: var(--primary); transform: translateY(-5px); }
-        .nav-item .icon { font-size: 1.5rem; margin-bottom: 2px; transition: 0.3s; filter: grayscale(1); opacity: 0.5; }
+        .nav-item .icon { font-size: 1.5rem; margin-bottom: 2px; filter: grayscale(1); opacity: 0.5; }
         .nav-item.active .icon { filter: grayscale(0); opacity: 1; filter: drop-shadow(0 0 10px var(--primary)); }
         .nav-item .label { font-size: 0.65rem; font-weight: 900; opacity: 0; transform: translateY(10px); transition: 0.3s; position: absolute; bottom: 8px; }
         .nav-item.active .label { opacity: 1; transform: translateY(0); }
 
-        /* --- 10. مودال (Modal) --- */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: flex-end; z-index: 2000; opacity: 0; transition: 0.3s; }
-        .modal-overlay.active { display: flex; opacity: 1; }
-        .modal-content { background: var(--surface-solid); border-top: 1px solid var(--primary); border-radius: 30px 30px 0 0; padding: 25px; width: 100%; max-width: 500px; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); max-height: 85vh; overflow-y: auto; }
-        .modal-overlay.active .modal-content { transform: translateY(0); }
+        /* --- 10. مودال و صفحات داخلی --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: flex-end; z-index: 2000; }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: var(--surface-solid); border-top: 1px solid var(--primary); border-radius: 30px 30px 0 0; padding: 25px; width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
         .modal-title { font-size: 1.2rem; font-weight: 900; color: var(--primary); }
         .modal-close { background: rgba(255,255,255,0.1); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; }
 
-        /* --- 11. ابزارها (ماشین‌حساب و...) --- */
-        .calc-screen { background: #000; padding: 15px; text-align: left; font-size: 2rem; font-weight: 900; color: var(--primary); direction: ltr; border-radius: 12px; margin-bottom: 15px; min-height: 70px; border: 1px solid var(--border); }
+        /* --- 11. ابزارها --- */
+        .calc-screen { background: #000; padding: 15px; text-align: left; font-size: 2rem; font-weight: 900; color: var(--primary); direction: ltr; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
         .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .calc-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 12px; padding: 15px; font-size: 1.1rem; font-weight: 900; color: #fff; cursor: pointer; transition: 0.1s; font-family: inherit; }
-        .calc-btn:active { background: var(--primary); color: #000; transform: scale(0.9); }
+        .calc-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 12px; padding: 15px; font-size: 1.1rem; font-weight: 900; color: #fff; cursor: pointer; }
+        .calc-btn:active { background: var(--primary); color: #000; }
         .calc-btn.op { color: var(--accent); }
         .calc-btn.equal { background: var(--primary); color: #000; grid-row: span 2; }
         
-        .input-group { margin-bottom: 15px; }
-        .form-control { width: 100%; background: #000; border: 1px solid var(--border); padding: 15px; border-radius: 12px; color: #fff; font-family: inherit; font-size: 1rem; outline: none; transition: 0.3s; }
-        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 10px var(--primary-glow); }
-        .action-btn { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--primary); color: #000; font-weight: 900; font-size: 1rem; font-family: inherit; cursor: pointer; margin-top: 10px; transition: 0.2s; }
-        .action-btn:active { transform: scale(0.98); }
-        .result-box { margin-top: 20px; padding: 15px; border-radius: 12px; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); color: var(--success); text-align: center; font-weight: 700; font-size: 1rem; display: none; }
+        .form-control { width: 100%; background: #000; border: 1px solid var(--border); padding: 15px; border-radius: 12px; color: #fff; font-family: inherit; font-size: 1rem; margin-bottom: 15px; }
+        .action-btn { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--primary); color: #000; font-weight: 900; font-size: 1rem; cursor: pointer; }
+        .result-box { margin-top: 15px; padding: 15px; border-radius: 12px; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); color: var(--success); text-align: center; font-weight: 700; display: none; }
 
-        /* انیمیشن‌ها */
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        .spinner { text-align: center; color: var(--primary); padding: 30px; font-weight: 900; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        /* --- 12. محتوای ماژول‌ها (فضا، سینما و...) --- */
+        .module-content { line-height: 2; font-size: 0.95rem; }
+        .module-content h3 { color: var(--primary); margin-top: 15px; margin-bottom: 10px; }
+        .module-content ul { padding-right: 20px; }
+        .module-content li { margin-bottom: 8px; color: var(--muted); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .spinner { text-align: center; color: var(--primary); padding: 30px; font-weight: 900; }
     </style>
 </head>
 <body>
@@ -179,7 +160,6 @@
     <div class="header">
         <div class="brand"><h1>RX OMNIVERSE</h1></div>
         <div class="header-actions">
-            <div class="icon-btn" onclick="showSearch()">🔍</div>
             <div onclick="switchTab('profile', document.querySelectorAll('.nav-item')[3])">
                 <img id="header-avatar" class="avatar" src="" style="display:none;">
                 <div id="header-avatar-fallback" class="avatar-fallback">R</div>
@@ -191,45 +171,43 @@
         <div class="ticker" id="ticker-content"><span>سیستم Omniverse راه‌اندازی شد...</span></div>
     </div>
 
-    <!-- 1. خانه (Universe) -->
+    <!-- خانه -->
     <div id="home" class="section active">
         <div class="hero-card" onclick="openModal('daily')">
             <h2>به RX Omniverse خوش آمدید</h2>
-            <p>یک اکوسیستم دیجیتال کامل، فراتر از یک اپلیکیشن خبری. از بازارهای مالی تا کاوش در فضا و دانش. همه‌چیز در یک جهان.</p>
-            <button class="hero-btn">شروع کاوش روزانه</button>
+            <p>یک اکوسیستم دیجیتال کامل. از بازارهای مالی تا کاوش در فضا و دانش. همه‌چیز در یک جهان.</p>
+            <button class="hero-btn">بریفینگ روزانه</button>
         </div>
 
-        <div class="section-title">بازار مالی <span>زنده</span></div>
+        <div class="section-title">بازار مالی</div>
         <div class="market-grid" id="market-data">
-            <div class="market-card loading"><span class="m-icon">💵</span><div class="m-title">دلار</div><div class="m-value">...</div></div>
-            <div class="market-card loading"><span class="m-icon">🥇</span><div class="m-title">طلا</div><div class="m-value">...</div></div>
+            <div class="market-card"><span class="m-icon">💵</span><div class="m-title">دلار</div><div class="m-value">...</div></div>
+            <div class="market-card"><span class="m-icon">🥇</span><div class="m-title">طلا</div><div class="m-value">...</div></div>
         </div>
 
-        <div class="section-title">ماژول‌های Omniverse <span>30 محیط</span></div>
+        <div class="section-title">ماژول‌های Omniverse</div>
         <div class="modules-grid">
-            <div class="module-box" onclick="openModal('space')"><span class="mod-icon">🌌</span><span class="mod-name">RX Space</span></div>
-            <div class="module-box" onclick="openModal('weather')"><span class="mod-icon">🌦</span><span class="mod-name">RX Weather</span></div>
-            <div class="module-box" onclick="openModal('cinema')"><span class="mod-icon">🎬</span><span class="mod-name">RX Cinema</span></div>
-            <div class="module-box" onclick="openModal('books')"><span class="mod-icon">📚</span><span class="mod-name">RX Books</span></div>
-            <div class="module-box" onclick="openModal('games')"><span class="mod-icon">🎮</span><span class="mod-name">RX Games</span></div>
-            <div class="module-box" onclick="openModal('art')"><span class="mod-icon">🎨</span><span class="mod-name">هنر و موسیقی</span></div>
-            <div class="module-box" onclick="openModal('auto')"><span class="mod-icon">🚗</span><span class="mod-name">RX Auto</span></div>
-            <div class="module-box" onclick="openModal('health')"><span class="mod-icon">🩺</span><span class="mod-name">RX Health</span></div>
-            <div class="module-box" onclick="openModal('science')"><span class="mod-icon">🔬</span><span class="mod-name">RX Science</span></div>
+            <div class="module-box" onclick="openModal('space')"><span class="mod-icon">🌌</span><span class="mod-name">فضا</span></div>
+            <div class="module-box" onclick="openModal('weather')"><span class="mod-icon">🌦</span><span class="mod-name">هوا</span></div>
+            <div class="module-box" onclick="openModal('cinema')"><span class="mod-icon">🎬</span><span class="mod-name">سینما</span></div>
+            <div class="module-box" onclick="openModal('books')"><span class="mod-icon">📚</span><span class="mod-name">کتاب</span></div>
+            <div class="module-box" onclick="openModal('games')"><span class="mod-icon">🎮</span><span class="mod-name">بازی</span></div>
+            <div class="module-box" onclick="openModal('art')"><span class="mod-icon">🎨</span><span class="mod-name">هنر و ساز</span></div>
+            <div class="module-box" onclick="openModal('auto')"><span class="mod-icon">🚗</span><span class="mod-name">خودرو</span></div>
+            <div class="module-box" onclick="openModal('health')"><span class="mod-icon">🩺</span><span class="mod-name">سلامت</span></div>
+            <div class="module-box" onclick="openModal('science')"><span class="mod-icon">🔬</span><span class="mod-name">علم</span></div>
         </div>
     </div>
 
-    <!-- 2. اخبار -->
+    <!-- اخبار -->
     <div id="news" class="section">
-        <div class="section-title">خبرگزاری RX <span>آخرین اخبار</span></div>
-        <div id="news-list">
-            <div class="spinner">⏳ در حال دریافت اخبار...</div>
-        </div>
+        <div class="section-title">خبرگزاری RX</div>
+        <div id="news-list"><div class="spinner">⏳ در حال دریافت اخبار...</div></div>
     </div>
 
-    <!-- 3. ابزارها -->
+    <!-- ابزارها -->
     <div id="tools" class="section">
-        <div class="section-title">جعبه‌ابزار پیشرفته</div>
+        <div class="section-title">جعبه‌ابزار</div>
         <div class="modules-grid">
             <div class="module-box" onclick="openModal('calc')"><span class="mod-icon">🧮</span><span class="mod-name">ماشین‌حساب</span></div>
             <div class="module-box" onclick="openModal('trans')"><span class="mod-icon">🌐</span><span class="mod-name">مترجم</span></div>
@@ -238,38 +216,29 @@
         </div>
     </div>
 
-    <!-- 4. پروفایل -->
+    <!-- پروفایل -->
     <div id="profile" class="section">
         <div style="text-align:center; margin: 20px 0 30px 0;">
             <img id="profile-avatar" class="avatar" style="width:100px; height:100px; margin: 0 auto 15px auto;" src="">
             <div id="profile-avatar-fallback" class="avatar-fallback" style="width:100px; height:100px; margin: 0 auto 15px auto; font-size:3rem;">R</div>
             <h2 id="profile-name" style="font-size:1.5rem; font-weight:900;">کاربر</h2>
-            <p style="color:var(--muted); font-size:0.9rem; margin-top:5px;">سطح اکتشاف: <span style="color:var(--primary); font-weight:900;">1</span></p>
         </div>
         
         <div class="section-title">تنظیمات و سیستم</div>
-        <div class="module-box" style="display:flex; flex-direction:row; justify-content:space-between; padding:20px; margin-bottom:10px; width:100%;" onclick="openModal('settings')">
-            <div style="display:flex; gap:15px; align-items:center; text-align:right;">
-                <span class="mod-icon">⚙️</span>
-                <span class="mod-name" style="font-size:1rem;">تنظیمات Omniverse</span>
-            </div>
-            <span style="color:var(--primary);">←</span>
+        <div class="module-box" style="display:flex; justify-content:space-between; padding:20px; margin-bottom:10px; width:100%;" onclick="openModal('settings')">
+            <div style="display:flex; gap:15px; align-items:center;"><span class="mod-icon">⚙️</span><span class="mod-name">تنظیمات Omniverse</span></div>
         </div>
-        <div class="module-box" style="display:flex; flex-direction:row; justify-content:space-between; padding:20px; margin-bottom:10px; width:100%;" onclick="openModal('saved')">
-            <div style="display:flex; gap:15px; align-items:center; text-align:right;">
-                <span class="mod-icon">📌</span>
-                <span class="mod-name" style="font-size:1rem;">آرشیو شخصی</span>
-            </div>
-            <span style="color:var(--primary);">←</span>
+        <div class="module-box" style="display:flex; justify-content:space-between; padding:20px; margin-bottom:10px; width:100%;" onclick="openModal('saved')">
+            <div style="display:flex; gap:15px; align-items:center;"><span class="mod-icon">📌</span><span class="mod-name">آرشیو شخصی</span></div>
         </div>
     </div>
 
     <!-- نوار پایین -->
     <div class="bottom-nav-container">
         <div class="bottom-nav">
-            <div class="nav-item active" onclick="switchTab('home', this)"><span class="icon">🌌</span><span class="label">دنیای RX</span></div>
+            <div class="nav-item active" onclick="switchTab('home', this)"><span class="icon">🌌</span><span class="label">RX</span></div>
             <div class="nav-item" onclick="switchTab('news', this)"><span class="icon">📰</span><span class="label">اخبار</span></div>
-            <div class="nav-item" onclick="switchTab('tools', this)"><span class="icon">🛠</span><span class="label">ابزارها</span></div>
+            <div class="nav-item" onclick="switchTab('tools', this)"><span class="icon">🛠</span><span class="label">ابزار</span></div>
             <div class="nav-item" onclick="switchTab('profile', this)"><span class="icon">👤</span><span class="label">پروفایل</span></div>
         </div>
     </div>
@@ -281,18 +250,14 @@
                 <div class="modal-title" id="modal-title">RX Omniverse</div>
                 <button class="modal-close" onclick="closeModal()">✖</button>
             </div>
-            <div id="modal-body" style="color:var(--text); line-height:1.8;"></div>
+            <div id="modal-body"></div>
         </div>
     </div>
 
     <script>
-        // --- 1. راه‌اندازی تلگرام و امنیت ---
         const tg = window.Telegram.WebApp;
-        tg.expand(); 
-        tg.ready(); 
-        tg.setHeaderColor('#030305');
+        tg.expand(); tg.ready(); tg.setHeaderColor('#030305');
 
-        // گرفتن اطلاعات کاربر به صورت امن
         const user = tg.initDataUnsafe?.user || { id: "نامشخص", first_name: "کاربر", photo_url: null };
         document.getElementById('profile-name').innerText = user.first_name;
         
@@ -303,7 +268,6 @@
             document.querySelectorAll('.avatar-fallback').forEach(el => el.innerText = user.first_name.charAt(0));
         }
 
-        // --- 2. مدیریت ناوبری ---
         function switchTab(tabId, element) {
             tg.HapticFeedback.impactOccurred('light');
             document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
@@ -315,43 +279,82 @@
             window.scrollTo(0, 0);
         }
 
-        function showSearch() {
-            tg.HapticFeedback.impactOccurred('medium');
-            openModal('search');
-        }
-
-        // --- 3. سیستم مودال (Modals) ---
+        // --- محتوای کامل ماژول‌ها ---
         function openModal(type) {
             tg.HapticFeedback.impactOccurred('medium');
             const body = document.getElementById('modal-body');
             const title = document.getElementById('modal-title');
             
-            if(type === 'search') {
-                title.innerText = "جستجوی سراسری";
-                body.innerHTML = `
-                    <input type="text" class="form-control" placeholder="جستجو در تمام Omniverse..." id="search-input" style="margin-bottom:15px;">
-                    <div id="search-results" style="color:var(--muted); text-align:center;">برای جستجو تایپ کنید...</div>`;
-            } else if(type === 'space') {
+            if(type === 'space') {
                 title.innerText = "RX Space 🌌";
-                body.innerHTML = `<p>محیط کیهانی RX Space. در این بخش به‌زودی می‌توانید موقعیت سیارات، اخبار ناسا، و تصاویر تلسکوپ جیمز وب را با یک رابط کاربری علمی و تعاملی مشاهده کنید.</p>`;
+                body.innerHTML = `<div class="module-content">
+                    <h3>کاوش در کیهان</h3>
+                    <p>به بخش فضایی Omniverse خوش آمدید. اینجا می‌توانید با آخرین اکتشافات نجومی آشنا شوید.</p>
+                    <ul>
+                        <li>🔭 تلسکوپ جیمز وب: کشف کهکشان‌های اولیه</li>
+                        <li>🚀 ماموریت آرتمیس: بازگشت به ماه</li>
+                        <li>🪐 مریخ‌نوردان: جستجوی حیات</li>
+                    </ul>
+                    <p style="margin-top:15px;">همه این داده‌ها از منابع معتبر علمی (NASA و ESA) در نسخه‌های آینده به صورت زنده به‌روزرسانی می‌شوند.</p>
+                </div>`;
             } else if (type === 'art') {
                 title.innerText = "RX Art & Music 🎨";
-                body.innerHTML = `<p>دنیای هنر. این ماژول شامل گالری نقاشی‌های مدرن و کلاسیک، و همچنین آرشیو صوتی سازهای اصیل ایرانی مانند <b>ستار، تنبور و کمانچه</b> خواهد بود.</p>`;
+                body.innerHTML = `<div class="module-content">
+                    <h3>دنیای هنر و موسیقی</h3>
+                    <p>ماژول هنر Omniverse به شما این امکان را می‌دهد تا در دنیای رنگ‌ها و نواها غرق شوید.</p>
+                    <h3>سازهای اصیل ایرانی</h3>
+                    <ul>
+                        <li><b>ستار:</b> سازی زهی با صدای مخملی</li>
+                        <li><b>تنبور:</b> نوای عرفانی و کهن</li>
+                        <li><b>کمانچه:</b> آرشه‌ای با صدای جانسوز</li>
+                    </ul>
+                    <p>در این بخش به‌زودی گالری نقاشی‌های کلاسیک و صداهای این سازها قابل پخش خواهد بود.</p>
+                </div>`;
             } else if (type === 'weather') {
                 title.innerText = "RX Weather 🌦";
-                body.innerHTML = `<p>هواشناسی دقیق. این ماژول به‌زودی با APIهای معتبر هواشناسی متصل شده و پیش‌بینی ساعتی، هفتگی، شاخص UV و کیفیت هوا را نمایش می‌دهد.</p>`;
+                body.innerHTML = `<div class="module-content">
+                    <h3>هواشناسی دقیق</h3>
+                    <p>این ماژول به‌زودی به داده‌های زنده هواشناسی متصل می‌شود.</p>
+                    <ul>
+                        <li>🌡️ دمای فعلی و احساسی</li>
+                        <li>💧 رطوبت و شاخص UV</li>
+                        <li>🌬️ سرعت باد و جهت آن</li>
+                    </ul>
+                </div>`;
             } else if (type === 'cinema') {
                 title.innerText = "RX Cinema 🎬";
-                body.innerHTML = `<p>دنیای سینما و سریال. نقدها، تقویم اکران و تریلرهای رسمی به‌زودی در این محیط سینمایی در دسترس قرار می‌گیرد.</p>`;
+                body.innerHTML = `<div class="module-content">
+                    <h3>سینما و سرگرمی</h3>
+                    <p>دنیای فیلم‌ها و سریال‌ها در Omniverse. این بخش شامل اطلاعات فیلم‌ها، بازیگران و نقدهای سینمایی است.</p>
+                    <ul>
+                        <li>🎥 جدیدترین اکران‌ها</li>
+                        <li>⭐ امتیاز کاربران</li>
+                        <li>📅 تقویم اکران</li>
+                    </ul>
+                </div>`;
             } else if (type === 'books') {
                 title.innerText = "RX Books 📚";
-                body.innerHTML = `<p>کتابخانه دیجیتال. معرفی کتاب‌ها، نویسندگان و امکان خواندن کتاب‌های با مالکیت عمومی به‌زودی اضافه می‌شود.</p>`;
+                body.innerHTML = `<div class="module-content">
+                    <h3>کتابخانه دیجیتال</h3>
+                    <p>هر کتاب یک دنیاست. در این بخش می‌توانید کتاب‌های معروف را جستجو کنید و از خلاصه آن‌ها لذت ببرید.</p>
+                    <ul>
+                        <li>📖 معرفی نویسندگان بزرگ</li>
+                        <li>🏆 کتاب‌های برنده جایزه</li>
+                        <li>📚 دسترسی به کتاب‌های عمومی</li>
+                    </ul>
+                </div>`;
             } else if (type === 'games') {
                 title.innerText = "RX Play 🎮";
-                body.innerHTML = `<p>محیط بازی و سرگرمی. چالش‌های فکری روزانه، آزمون‌های اطلاعات عمومی و بازی‌های منطقی در این بخش قرار می‌گیرند.</p>`;
+                body.innerHTML = `<div class="module-content">
+                    <h3>مرکز سرگرمی</h3>
+                    <p>بازی‌های فکری و چالش‌های روزانه به‌زودی در این بخش فعال می‌شوند. بدون قمار، فقط سرگرمی و یادگیری!</p>
+                </div>`;
             } else if(type === 'daily') {
                 title.innerText = "RX Daily ☀️";
-                body.innerHTML = `<p>خلاصه خبری روزانه و دستور کار سیستم Omniverse. (در حال توسعه)</p>`;
+                body.innerHTML = `<div class="module-content">
+                    <h3>خلاصه روزانه</h3>
+                    <p>این بخش به‌زودی خلاصه‌ای هوشمند از مهم‌ترین اخبار روز، تغییرات بازار و نکات آموزشی را به شما ارائه می‌دهد.</p>
+                </div>`;
             } else if(type === 'calc') {
                 title.innerText = "ماشین‌حساب";
                 body.innerHTML = `<div class="calc-screen" id="calc-screen">0</div>
@@ -360,44 +363,37 @@
                     <button class="calc-btn op" onclick="calcInput('/')">÷</button>
                     <button class="calc-btn op" onclick="calcInput('*')">×</button>
                     <button class="calc-btn op" onclick="calcInput('-')">-</button>
-                    
                     <button class="calc-btn" onclick="calcInput('7')">7</button>
                     <button class="calc-btn" onclick="calcInput('8')">8</button>
                     <button class="calc-btn" onclick="calcInput('9')">9</button>
                     <button class="calc-btn op" onclick="calcInput('+')">+</button>
-                    
                     <button class="calc-btn" onclick="calcInput('4')">4</button>
                     <button class="calc-btn" onclick="calcInput('5')">5</button>
                     <button class="calc-btn" onclick="calcInput('6')">6</button>
                     <button class="calc-btn equal" onclick="calcInput('=')">=</button>
-                    
                     <button class="calc-btn" onclick="calcInput('1')">1</button>
                     <button class="calc-btn" onclick="calcInput('2')">2</button>
                     <button class="calc-btn" onclick="calcInput('3')">3</button>
-                    
                     <button class="calc-btn" style="grid-column: span 3;" onclick="calcInput('0')">0</button>
                 </div>`;
             } else if(type === 'trans') {
-                title.innerText = "مترجم هوشمند";
-                body.innerHTML = `<div class="input-group"><label>متن (فارسی/انگلیسی):</label><input type="text" id="trans-input" class="form-control" placeholder="..."></div>
+                title.innerText = "مترجم";
+                body.innerHTML = `<input type="text" id="trans-input" class="form-control" placeholder="متن...">
                 <button class="action-btn" onclick="doTranslate()">ترجمه</button>
                 <div id="trans-result" class="result-box"></div>`;
             } else if(type === 'currency') {
                 title.innerText = "تبدیل ارز";
-                body.innerHTML = `<div class="input-group"><label>مثلاً 50 دلار:</label><input type="text" id="curr-input" class="form-control" placeholder="..."></div>
+                body.innerHTML = `<input type="text" id="curr-input" class="form-control" placeholder="مثلاً 50 دلار">
                 <button class="action-btn" onclick="doConvert()">تبدیل</button>
                 <div id="curr-result" class="result-box"></div>`;
             } else if(type === 'saved') {
-                title.innerText = "آرشیو شخصی";
+                title.innerText = "آرشیو";
                 let saved = JSON.parse(localStorage.getItem('saved_news') || '[]');
-                if(saved.length === 0) body.innerHTML = '<div style="text-align:center; color:var(--muted); padding:20px;">هنوز خبری ذخیره نکرده‌اید.</div>';
-                else body.innerHTML = saved.map(s => `<div style="padding:12px; border-bottom:1px solid var(--border); font-weight:700;">${s.title}</div>`).join('');
+                if(saved.length === 0) body.innerHTML = '<p style="text-align:center; color:var(--muted);">خالی است.</p>';
+                else body.innerHTML = saved.map(s => `<div style="padding:10px; border-bottom:1px solid #333;">${s.title}</div>`).join('');
             } else if(type === 'settings') {
-                title.innerText = "تنظیمات Omniverse";
-                body.innerHTML = `<p style="color:var(--muted);">تنظیمات پیشرفته در نسخه‌های آتی فعال می‌شود.</p>`;
-            } else {
-                title.innerText = "ماژول Omniverse";
-                body.innerHTML = `<p>این بخش در حال توسعه است و به‌زودی با قابلیت‌های کامل در دسترس قرار می‌گیرد.</p>`;
+                title.innerText = "تنظیمات";
+                body.innerHTML = `<p>تنظیمات پیشرفته به‌زودی...</p>`;
             }
             document.getElementById('modal').classList.add('active');
         }
@@ -407,36 +403,32 @@
             document.getElementById('modal').classList.remove('active');
         }
 
-        // --- 4. ماشین‌حساب ---
         let calcStr = "0";
         function calcInput(val) {
             tg.HapticFeedback.impactOccurred('light');
             if(val === 'C') calcStr = "0";
             else if(val === '=') { try { calcStr = eval(calcStr).toString(); } catch { calcStr = "Error"; } }
             else { calcStr = (calcStr === "0" || calcStr === "Error") ? val : calcStr + val; }
-            const screen = document.getElementById('calc-screen');
-            if(screen) screen.innerText = calcStr;
+            document.getElementById('calc-screen').innerText = calcStr;
         }
 
-        // --- 5. مترجم ---
         async function doTranslate() {
             const text = document.getElementById('trans-input').value;
             const resBox = document.getElementById('trans-result');
             if(!text) return;
-            resBox.style.display = 'block'; resBox.innerText = "⏳ در حال ترجمه...";
+            resBox.style.display = 'block'; resBox.innerText = "⏳...";
             const isFa = /[\u0600-\u06FF]/.test(text);
             try {
                 const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${isFa ? 'fa|en' : 'en|fa'}`);
                 const data = await res.json();
                 resBox.innerText = data.responseData.translatedText;
-            } catch(e) { resBox.innerText = "❌ خطا در ترجمه."; }
+            } catch(e) { resBox.innerText = "❌ خطا"; }
         }
 
-        // --- 6. تبدیل ارز ---
         async function doConvert() {
             const text = document.getElementById('curr-input').value.toLowerCase();
             const resBox = document.getElementById('curr-result');
-            resBox.style.display = 'block'; resBox.innerText = "⏳ در حال محاسبه...";
+            resBox.style.display = 'block'; resBox.innerText = "⏳...";
             const match = text.match(/([\d\.]+)\s*(دلار|یورو|تومان|بیت|bitcoin|btc)/);
             if(!match) { resBox.innerText = "❌ فرمت نامعتبر."; return; }
             try {
@@ -447,76 +439,73 @@
                 let final = "";
                 if(match[2].includes("دلار")) final = `${match[1]} دلار = ${(match[1]*usd).toLocaleString('fa-IR')} تومان`;
                 else if(match[2].includes("تومان")) final = `${Number(match[1]).toLocaleString('fa-IR')} تومان = ${(match[1]/usd).toFixed(2)} دلار`;
-                resBox.innerText = final || "❌ ارز نامعتبر.";
-            } catch(e) { resBox.innerText = "❌ خطا در شبکه."; }
+                resBox.innerText = final || "❌ نامعتبر";
+            } catch(e) { resBox.innerText = "❌ خطا"; }
         }
 
-        // --- 7. دریافت قیمت‌های بازار ---
         async function loadMarkets() {
             try {
                 const res = await fetch("https://raw.githubusercontent.com/iran-market/iran-market.github.io/main/data/popular.json");
                 const data = await res.json();
                 const p = data.data;
-                
                 const getW = (sym, name, icon) => {
                     const i = p.find(x => x.symbol === sym);
                     if(!i) return '';
                     let chg = i.change !== undefined ? `<div class="m-change ${i.change >= 0 ? 'up' : 'down'}">${i.change >= 0 ? '+' : ''}${i.change.toFixed(2)}%</div>` : '';
                     return `<div class="market-card"><span class="m-icon">${icon}</span><div class="m-title">${name}</div><div class="m-value">${i.price.toLocaleString('fa-IR')}</div>${chg}</div>`;
                 };
-
-                let html = getW("USD_IRR_FREE", "دلار آزاد", "💵") + getW("GOLD_18K_IRR", "طلای ۱۸", "🥇") + getW("COIN_EMAMI_IRR", "سکه امامی", "🪙");
-                
-                try {
-                    const btc = await (await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true")).json();
-                    if(btc.bitcoin) {
-                        html += `<div class="market-card"><span class="m-icon">₿</span><div class="m-title">بیت‌کوین</div><div class="m-value">$${btc.bitcoin.usd.toLocaleString('en-US')}</div><div class="m-change ${btc.bitcoin.usd_24h_change >= 0 ? 'up' : 'down'}">${btc.bitcoin.usd_24h_change.toFixed(2)}%</div></div>`;
-                    }
-                } catch(e) {}
-
+                let html = getW("USD_IRR_FREE", "دلار", "💵") + getW("GOLD_18K_IRR", "طلا", "🥇") + getW("COIN_EMAMI_IRR", "سکه", "🪙");
                 document.getElementById('market-data').innerHTML = html;
             } catch(e) {}
         }
 
-        // --- 8. دریافت اخبار ---
+        // --- دریافت اخبار (با استفاده از allorigins برای دور زدن فیلتر) ---
         async function loadNews() {
             const container = document.getElementById('news-list');
             try {
-                const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://feeds.bbci.co.uk/persian/rss.xml')}`;
-                const data = await (await fetch(url)).json();
-                if (data.status === 'ok' && data.items.length > 0) {
+                // استفاده از سرویس allorigins برای جلوگیری از خطای CORS
+                const rssUrl = encodeURIComponent('https://feeds.bbci.co.uk/persian/rss.xml');
+                const proxyUrl = `https://api.allorigins.win/get?url=${rssUrl}`;
+                const res = await fetch(proxyUrl);
+                const json = await res.json();
+                
+                // پارس کردن XML به JSON
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(json.contents, "text/xml");
+                const items = xmlDoc.querySelectorAll("item");
+                
+                if (items.length > 0) {
                     let html = '';
-                    data.items.slice(0, 10).forEach(item => {
-                        let img = item.thumbnail || 'https://via.placeholder.com/400x200/030305/00f2fe?text=RXNEWS';
-                        let date = item.pubDate ? new Date(item.pubDate).toLocaleDateString('fa-IR') : '';
+                    let tickerHtml = '';
+                    
+                    for (let i = 0; i < Math.min(items.length, 10); i++) {
+                        const title = items[i].querySelector("title").textContent;
+                        const link = items[i].querySelector("link").textContent;
+                        const desc = items[i].querySelector("description").textContent;
+                        
+                        if(i < 3) tickerHtml += `<span>${title}</span>`;
+                        
                         html += `
-                            <div class="news-card" onclick="tg.openLink('${item.link}')">
-                                <img src="${img}" class="news-img" onerror="this.src='https://via.placeholder.com/400x200/030305/00f2fe?text=RXNEWS'">
+                            <div class="news-card" onclick="tg.openLink('${link}')">
                                 <div class="news-content">
-                                    <div class="news-meta"><span>BBC PERSIAN</span><span>${date}</span></div>
-                                    <div class="news-title">${item.title}</div>
-                                    <div class="news-desc">${item.description.replace(/<[^>]*>?/gm, '')}</div>
+                                    <div class="news-meta"><span>BBC PERSIAN</span></div>
+                                    <div class="news-title">${title}</div>
+                                    <div class="news-desc">${desc.replace(/<[^>]*>?/gm, '')}</div>
                                 </div>
                             </div>`;
-                    });
+                    }
                     container.innerHTML = html;
-                    
-                    // پر کردن تیکر
-                    let tickerHtml = '';
-                    data.items.slice(0, 4).forEach(i => tickerHtml += `<span>${i.title}</span>`);
                     document.getElementById('ticker-content').innerHTML = tickerHtml;
                 } else {
-                    container.innerHTML = '<div class="spinner">❌ خطا در دریافت اخبار (فیلترشکن را بررسی کنید).</div>';
+                    container.innerHTML = '<div class="spinner">❌ خبری یافت نشد.</div>';
                 }
-            } catch(e) { container.innerHTML = '<div class="spinner">❌ خطای شبکه.</div>'; }
+            } catch(e) { 
+                container.innerHTML = '<div class="spinner">❌ خطای شبکه.</div>'; 
+            }
         }
 
-        // --- 9. اجرای اولیه ---
         loadMarkets();
         loadNews();
-        
-        // بروزرسانی خودکار قیمت‌ها هر 1 دقیقه
-        setInterval(loadMarkets, 60000);
     </script>
 </body>
 </html>

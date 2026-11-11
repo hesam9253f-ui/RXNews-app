@@ -124,7 +124,7 @@
         .nav-item .label { font-size: 0.65rem; font-weight: 900; opacity: 0; transform: translateY(10px); transition: 0.3s; position: absolute; bottom: 8px; }
         .nav-item.active .label { opacity: 1; transform: translateY(0); }
 
-        /* --- 10. مودال و صفحات داخلی --- */
+        /* --- 10. مودال --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: flex-end; z-index: 2000; }
         .modal-overlay.active { display: flex; }
         .modal-content { background: var(--surface-solid); border-top: 1px solid var(--primary); border-radius: 30px 30px 0 0; padding: 25px; width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; }
@@ -145,7 +145,7 @@
         .action-btn { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--primary); color: #000; font-weight: 900; font-size: 1rem; cursor: pointer; }
         .result-box { margin-top: 15px; padding: 15px; border-radius: 12px; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); color: var(--success); text-align: center; font-weight: 700; display: none; }
 
-        /* --- 12. محتوای ماژول‌ها (فضا، سینما و...) --- */
+        /* --- 12. محتوای ماژول‌ها --- */
         .module-content { line-height: 2; font-size: 0.95rem; }
         .module-content h3 { color: var(--primary); margin-top: 15px; margin-bottom: 10px; }
         .module-content ul { padding-right: 20px; }
@@ -171,7 +171,7 @@
         <div class="ticker" id="ticker-content"><span>سیستم Omniverse راه‌اندازی شد...</span></div>
     </div>
 
-    <!-- خانه -->
+    <!-- 1. خانه -->
     <div id="home" class="section active">
         <div class="hero-card" onclick="openModal('daily')">
             <h2>به RX Omniverse خوش آمدید</h2>
@@ -199,13 +199,13 @@
         </div>
     </div>
 
-    <!-- اخبار -->
+    <!-- 2. اخبار -->
     <div id="news" class="section">
         <div class="section-title">خبرگزاری RX</div>
-        <div id="news-list"><div class="spinner">⏳ در حال دریافت اخبار...</div></div>
+        <div id="news-list"><div class="spinner">⏳ در حال دریافت اخبار از بی‌بی‌سی...</div></div>
     </div>
 
-    <!-- ابزارها -->
+    <!-- 3. ابزارها -->
     <div id="tools" class="section">
         <div class="section-title">جعبه‌ابزار</div>
         <div class="modules-grid">
@@ -216,7 +216,7 @@
         </div>
     </div>
 
-    <!-- پروفایل -->
+    <!-- 4. پروفایل -->
     <div id="profile" class="section">
         <div style="text-align:center; margin: 20px 0 30px 0;">
             <img id="profile-avatar" class="avatar" style="width:100px; height:100px; margin: 0 auto 15px auto;" src="">
@@ -256,7 +256,7 @@
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand(); tg.ready(); tg.setHeaderColor('#030305');
+        tg.expand(); tg.ready();
 
         const user = tg.initDataUnsafe?.user || { id: "نامشخص", first_name: "کاربر", photo_url: null };
         document.getElementById('profile-name').innerText = user.first_name;
@@ -287,105 +287,34 @@
             
             if(type === 'space') {
                 title.innerText = "RX Space 🌌";
-                body.innerHTML = `<div class="module-content">
-                    <h3>کاوش در کیهان</h3>
-                    <p>به بخش فضایی Omniverse خوش آمدید. اینجا می‌توانید با آخرین اکتشافات نجومی آشنا شوید.</p>
-                    <ul>
-                        <li>🔭 تلسکوپ جیمز وب: کشف کهکشان‌های اولیه</li>
-                        <li>🚀 ماموریت آرتمیس: بازگشت به ماه</li>
-                        <li>🪐 مریخ‌نوردان: جستجوی حیات</li>
-                    </ul>
-                    <p style="margin-top:15px;">همه این داده‌ها از منابع معتبر علمی (NASA و ESA) در نسخه‌های آینده به صورت زنده به‌روزرسانی می‌شوند.</p>
-                </div>`;
+                body.innerHTML = `<div class="module-content"><h3>کاوش در کیهان</h3><p>به بخش فضایی Omniverse خوش آمدید. اینجا می‌توانید با آخرین اکتشافات نجومی آشنا شوید.</p><ul><li>🔭 تلسکوپ جیمز وب: کشف کهکشان‌های اولیه</li><li>🚀 ماموریت آرتمیس: بازگشت به ماه</li><li>🪐 مریخ‌نوردان: جستجوی حیات</li></ul></div>`;
             } else if (type === 'art') {
                 title.innerText = "RX Art & Music 🎨";
-                body.innerHTML = `<div class="module-content">
-                    <h3>دنیای هنر و موسیقی</h3>
-                    <p>ماژول هنر Omniverse به شما این امکان را می‌دهد تا در دنیای رنگ‌ها و نواها غرق شوید.</p>
-                    <h3>سازهای اصیل ایرانی</h3>
-                    <ul>
-                        <li><b>ستار:</b> سازی زهی با صدای مخملی</li>
-                        <li><b>تنبور:</b> نوای عرفانی و کهن</li>
-                        <li><b>کمانچه:</b> آرشه‌ای با صدای جانسوز</li>
-                    </ul>
-                    <p>در این بخش به‌زودی گالری نقاشی‌های کلاسیک و صداهای این سازها قابل پخش خواهد بود.</p>
-                </div>`;
+                body.innerHTML = `<div class="module-content"><h3>دنیای هنر و موسیقی</h3><p>ماژول هنر Omniverse به شما این امکان را می‌دهد تا در دنیای رنگ‌ها و نواها غرق شوید.</p><h3>سازهای اصیل ایرانی</h3><ul><li><b>ستار:</b> سازی زهی با صدای مخملی</li><li><b>تنبور:</b> نوای عرفانی و کهن</li><li><b>کمانچه:</b> آرشه‌ای با صدای جانسوز</li></ul></div>`;
             } else if (type === 'weather') {
                 title.innerText = "RX Weather 🌦";
-                body.innerHTML = `<div class="module-content">
-                    <h3>هواشناسی دقیق</h3>
-                    <p>این ماژول به‌زودی به داده‌های زنده هواشناسی متصل می‌شود.</p>
-                    <ul>
-                        <li>🌡️ دمای فعلی و احساسی</li>
-                        <li>💧 رطوبت و شاخص UV</li>
-                        <li>🌬️ سرعت باد و جهت آن</li>
-                    </ul>
-                </div>`;
+                body.innerHTML = `<div class="module-content"><h3>هواشناسی دقیق</h3><p>این ماژول به‌زودی به داده‌های زنده هواشناسی متصل می‌شود.</p><ul><li>🌡️ دمای فعلی و احساسی</li><li>💧 رطوبت و شاخص UV</li><li>🌬️ سرعت باد و جهت آن</li></ul></div>`;
             } else if (type === 'cinema') {
                 title.innerText = "RX Cinema 🎬";
-                body.innerHTML = `<div class="module-content">
-                    <h3>سینما و سرگرمی</h3>
-                    <p>دنیای فیلم‌ها و سریال‌ها در Omniverse. این بخش شامل اطلاعات فیلم‌ها، بازیگران و نقدهای سینمایی است.</p>
-                    <ul>
-                        <li>🎥 جدیدترین اکران‌ها</li>
-                        <li>⭐ امتیاز کاربران</li>
-                        <li>📅 تقویم اکران</li>
-                    </ul>
-                </div>`;
+                body.innerHTML = `<div class="module-content"><h3>سینما و سرگرمی</h3><p>دنیای فیلم‌ها و سریال‌ها در Omniverse. این بخش شامل اطلاعات فیلم‌ها، بازیگران و نقدهای سینمایی است.</p></div>`;
             } else if (type === 'books') {
                 title.innerText = "RX Books 📚";
-                body.innerHTML = `<div class="module-content">
-                    <h3>کتابخانه دیجیتال</h3>
-                    <p>هر کتاب یک دنیاست. در این بخش می‌توانید کتاب‌های معروف را جستجو کنید و از خلاصه آن‌ها لذت ببرید.</p>
-                    <ul>
-                        <li>📖 معرفی نویسندگان بزرگ</li>
-                        <li>🏆 کتاب‌های برنده جایزه</li>
-                        <li>📚 دسترسی به کتاب‌های عمومی</li>
-                    </ul>
-                </div>`;
+                body.innerHTML = `<div class="module-content"><h3>کتابخانه دیجیتال</h3><p>هر کتاب یک دنیاست. در این بخش می‌توانید کتاب‌های معروف را جستجو کنید.</p></div>`;
             } else if (type === 'games') {
                 title.innerText = "RX Play 🎮";
-                body.innerHTML = `<div class="module-content">
-                    <h3>مرکز سرگرمی</h3>
-                    <p>بازی‌های فکری و چالش‌های روزانه به‌زودی در این بخش فعال می‌شوند. بدون قمار، فقط سرگرمی و یادگیری!</p>
-                </div>`;
+                body.innerHTML = `<div class="module-content"><h3>مرکز سرگرمی</h3><p>بازی‌های فکری و چالش‌های روزانه به‌زودی در این بخش فعال می‌شوند. بدون قمار، فقط سرگرمی!</p></div>`;
             } else if(type === 'daily') {
                 title.innerText = "RX Daily ☀️";
-                body.innerHTML = `<div class="module-content">
-                    <h3>خلاصه روزانه</h3>
-                    <p>این بخش به‌زودی خلاصه‌ای هوشمند از مهم‌ترین اخبار روز، تغییرات بازار و نکات آموزشی را به شما ارائه می‌دهد.</p>
-                </div>`;
+                body.innerHTML = `<div class="module-content"><h3>خلاصه روزانه</h3><p>این بخش به‌زودی خلاصه‌ای هوشمند از مهم‌ترین اخبار روز را ارائه می‌دهد.</p></div>`;
             } else if(type === 'calc') {
                 title.innerText = "ماشین‌حساب";
-                body.innerHTML = `<div class="calc-screen" id="calc-screen">0</div>
-                <div class="calc-grid">
-                    <button class="calc-btn op" onclick="calcInput('C')">C</button>
-                    <button class="calc-btn op" onclick="calcInput('/')">÷</button>
-                    <button class="calc-btn op" onclick="calcInput('*')">×</button>
-                    <button class="calc-btn op" onclick="calcInput('-')">-</button>
-                    <button class="calc-btn" onclick="calcInput('7')">7</button>
-                    <button class="calc-btn" onclick="calcInput('8')">8</button>
-                    <button class="calc-btn" onclick="calcInput('9')">9</button>
-                    <button class="calc-btn op" onclick="calcInput('+')">+</button>
-                    <button class="calc-btn" onclick="calcInput('4')">4</button>
-                    <button class="calc-btn" onclick="calcInput('5')">5</button>
-                    <button class="calc-btn" onclick="calcInput('6')">6</button>
-                    <button class="calc-btn equal" onclick="calcInput('=')">=</button>
-                    <button class="calc-btn" onclick="calcInput('1')">1</button>
-                    <button class="calc-btn" onclick="calcInput('2')">2</button>
-                    <button class="calc-btn" onclick="calcInput('3')">3</button>
-                    <button class="calc-btn" style="grid-column: span 3;" onclick="calcInput('0')">0</button>
-                </div>`;
+                body.innerHTML = `<div class="calc-screen" id="calc-screen">0</div><div class="calc-grid"><button class="calc-btn op" onclick="calcInput('C')">C</button><button class="calc-btn op" onclick="calcInput('/')">÷</button><button class="calc-btn op" onclick="calcInput('*')">×</button><button class="calc-btn op" onclick="calcInput('-')">-</button><button class="calc-btn" onclick="calcInput('7')">7</button><button class="calc-btn" onclick="calcInput('8')">8</button><button class="calc-btn" onclick="calcInput('9')">9</button><button class="calc-btn op" onclick="calcInput('+')">+</button><button class="calc-btn" onclick="calcInput('4')">4</button><button class="calc-btn" onclick="calcInput('5')">5</button><button class="calc-btn" onclick="calcInput('6')">6</button><button class="calc-btn equal" onclick="calcInput('=')">=</button><button class="calc-btn" onclick="calcInput('1')">1</button><button class="calc-btn" onclick="calcInput('2')">2</button><button class="calc-btn" onclick="calcInput('3')">3</button><button class="calc-btn" style="grid-column: span 3;" onclick="calcInput('0')">0</button></div>`;
             } else if(type === 'trans') {
                 title.innerText = "مترجم";
-                body.innerHTML = `<input type="text" id="trans-input" class="form-control" placeholder="متن...">
-                <button class="action-btn" onclick="doTranslate()">ترجمه</button>
-                <div id="trans-result" class="result-box"></div>`;
+                body.innerHTML = `<input type="text" id="trans-input" class="form-control" placeholder="متن..."><button class="action-btn" onclick="doTranslate()">ترجمه</button><div id="trans-result" class="result-box"></div>`;
             } else if(type === 'currency') {
                 title.innerText = "تبدیل ارز";
-                body.innerHTML = `<input type="text" id="curr-input" class="form-control" placeholder="مثلاً 50 دلار">
-                <button class="action-btn" onclick="doConvert()">تبدیل</button>
-                <div id="curr-result" class="result-box"></div>`;
+                body.innerHTML = `<input type="text" id="curr-input" class="form-control" placeholder="مثلاً 50 دلار"><button class="action-btn" onclick="doConvert()">تبدیل</button><div id="curr-result" class="result-box"></div>`;
             } else if(type === 'saved') {
                 title.innerText = "آرشیو";
                 let saved = JSON.parse(localStorage.getItem('saved_news') || '[]');
@@ -459,25 +388,24 @@
             } catch(e) {}
         }
 
-        // --- دریافت اخبار (با استفاده از allorigins برای دور زدن فیلتر) ---
+        // --- دریافت اخبار مستقیم از BBC با CorsProxy ---
         async function loadNews() {
             const container = document.getElementById('news-list');
+            const rssUrl = "https://feeds.bbci.co.uk/persian/rss.xml";
+            // استفاده از یک پروکسی پایدار برای دور زدن خطای CORS
+            const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(rssUrl)}`;
+
             try {
-                // استفاده از سرویس allorigins برای جلوگیری از خطای CORS
-                const rssUrl = encodeURIComponent('https://feeds.bbci.co.uk/persian/rss.xml');
-                const proxyUrl = `https://api.allorigins.win/get?url=${rssUrl}`;
-                const res = await fetch(proxyUrl);
-                const json = await res.json();
+                const response = await fetch(proxyUrl);
+                const text = await response.text();
                 
-                // پارس کردن XML به JSON
                 const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(json.contents, "text/xml");
+                const xmlDoc = parser.parseFromString(text, "text/xml");
                 const items = xmlDoc.querySelectorAll("item");
-                
+
                 if (items.length > 0) {
                     let html = '';
                     let tickerHtml = '';
-                    
                     for (let i = 0; i < Math.min(items.length, 10); i++) {
                         const title = items[i].querySelector("title").textContent;
                         const link = items[i].querySelector("link").textContent;
@@ -499,8 +427,8 @@
                 } else {
                     container.innerHTML = '<div class="spinner">❌ خبری یافت نشد.</div>';
                 }
-            } catch(e) { 
-                container.innerHTML = '<div class="spinner">❌ خطای شبکه.</div>'; 
+            } catch(e) {
+                container.innerHTML = '<div class="spinner">❌ خطا در ارتباط با سرور (فیلترشکن را بررسی کنید).</div>';
             }
         }
 
